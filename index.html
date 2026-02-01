@@ -1,97 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Candle Workshop - Multi-Language</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Candle Workshop - Multi-Language with AI Companion</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
+        :root{
             --primary: #FF6B9D;
-            --secondary: #FEC260;
             --accent: #4ECDC4;
             --dark: #2D3561;
             --light: #FFF9F0;
-            --gradient-1: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
-            --gradient-2: linear-gradient(135deg, #FEC260 0%, #F77062 100%);
-            --gradient-3: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 32px rgba(0,0,0,0.08);
         }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#FFF9F0 0%,#FFE6F0 50%,#E6F7F5 100%);min-height:100vh;color:var(--dark)}
+        .header{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white;padding:1rem 1.25rem;box-shadow:var(--card-shadow);position:sticky;top:0;z-index:100}
+        .header-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+        h1{font-family:'Playfair Display',serif;font-size:1.5rem;display:flex;gap:0.5rem;align-items:center}
+        p.subtitle{opacity:0.95;font-size:0.9rem;margin-top:0.25rem}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #FFF9F0 0%, #FFE6F0 50%, #E6F7F5 100%);
-            color: var(--dark);
-            min-height: 100vh;
-        }
+        .lang-selector{display:flex;gap:0.5rem;background:rgba(255,255,255,0.14);padding:0.3rem;border-radius:10px}
+        .lang-btn{background:transparent;border:0;color:white;padding:0.35rem 0.5rem;border-radius:8px;cursor:pointer;font-weight:700}
+        .lang-btn.active{background:white;color:var(--primary)}
 
-        .header {
-            background: var(--gradient-1);
-            color: white;
-            padding: 1.25rem 1.5rem;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        .main-wrap{max-width:1200px;margin:1.5rem auto;display:grid;grid-template-columns:1fr 340px;gap:1rem;padding:0 1rem;align-items:start}
+        @media(max-width:1060px){.main-wrap{grid-template-columns:1fr}}
+        .left-col{}
+        .card{background:white;border-radius:12px;padding:1rem;box-shadow:var(--card-shadow);margin-bottom:1rem}
+        .tabs{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap}
+        .tab-btn{background:white;border:0;padding:0.5rem 0.8rem;border-radius:10px;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+        .tab-btn.active{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.6rem}
+        label{display:block;margin-bottom:0.25rem;font-weight:700}
+        input[type="text"],input[type="number"],select,input[type="date"],input[type="time"]{width:100%;padding:0.55rem;border-radius:8px;border:1px solid #E8EEF8}
+        .btn{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white;border:0;padding:0.6rem 0.9rem;border-radius:8px;cursor:pointer;font-weight:800}
+        .btn.secondary{background:linear-gradient(135deg,#FEC260,#F77062)}
+        .btn.small{padding:0.35rem 0.6rem;font-size:0.85rem}
+        .btn.danger{background:linear-gradient(135deg,#FF6B9D,#FF5370)}
+        .recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.6rem}
+        .recipe-preview{background:white;border-radius:10px;padding:0.85rem;box-shadow:0 8px 28px rgba(0,0,0,0.06);cursor:pointer;display:flex;flex-direction:column;gap:0.45rem}
+        .missing-badge{background:linear-gradient(135deg,#FEF3C7,#FDE68A);padding:0.45rem;border-radius:8px;color:#92400E;font-weight:700;font-size:0.9rem;display:inline-block}
+        .material-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem;border-radius:8px;background:linear-gradient(135deg,#fff,#fff9f0)}
+        .material-actions{display:flex;gap:0.4rem;align-items:center}
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+        /* Modal */
+        .modal{display:none;position:fixed;inset:0;background:rgba(45,53,97,0.7);align-items:center;justify-content:center;padding:1rem;z-index:1200}
+        .modal.active{display:flex}
+        .modal-content{background:white;border-radius:12px;width:100%;max-width:900px;max-height:90vh;overflow:auto}
+        .modal-header{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white;padding:1rem;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center}
+        .modal-body{padding:1rem}
+        .cost-summary{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white;padding:0.75rem;border-radius:8px;margin-top:0.6rem}
 
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; display:flex; align-items:center; gap:0.5rem; }
-        .header p { opacity: 0.95; margin-top: 0.25rem; font-size: 0.9rem; }
-
-        .lang-selector { display:flex; gap:0.5rem; background: rgba(255,255,255,0.18); padding:0.35rem; border-radius:10px; }
-        .lang-btn { border: none; background: transparent; color: white; cursor:pointer; padding:0.35rem 0.6rem; border-radius:8px; font-weight:700; }
-        .lang-btn.active { background: white; color: var(--primary); }
-
-        .container { max-width:1200px; margin: 2rem auto; padding: 0 1rem; }
-
-        .tabs { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
-        .tab-btn { background: white; border: none; padding:0.6rem 1rem; border-radius:12px; cursor:pointer; font-weight:600; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-        .tab-btn.active { background: var(--gradient-1); color: white; }
-
-        .card { background:white; border-radius:16px; padding:1.2rem; box-shadow: var(--shadow); margin-bottom:1rem; }
-
-        .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
-
-        label { display:block; margin-bottom:0.25rem; font-weight:600; }
-        input[type="text"], input[type="number"], select, textarea, input[type="date"], input[type="time"] {
-            width:100%; padding:0.6rem; border-radius:8px; border:1px solid #E8EEF8; font-family:inherit;
-        }
-
-        .btn { background: var(--gradient-1); color:white; border:none; padding:0.7rem 1rem; border-radius:10px; cursor:pointer; font-weight:700; }
-        .btn.secondary { background: var(--gradient-2); }
-        .btn.danger { background: linear-gradient(135deg,#FF6B9D,#FF5370); }
-        .btn.small { padding:0.35rem 0.6rem; font-size:0.85rem; }
-
-        .recipe-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:1rem; margin-top:0.5rem; }
-        .recipe-preview { background:white; border-radius:12px; padding:1rem; box-shadow:0 8px 28px rgba(0,0,0,0.06); cursor:pointer; display:flex; flex-direction:column; gap:0.6rem; }
-        .missing-badge { background: linear-gradient(135deg,#FEF3C7,#FDE68A); padding:0.6rem; border-radius:8px; color:#92400E; font-weight:600; }
-
-        .material-row { display:flex; justify-content:space-between; gap:0.5rem; padding:0.6rem; border-radius:8px; background:linear-gradient(135deg,#fff,#fff9f0); align-items:center; }
-        .material-actions { display:flex; gap:0.4rem; }
-
-        .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:1000; padding:1rem; }
-        .modal.active { display:flex; }
-        .modal-content { width:100%; max-width:820px; background:white; border-radius:12px; overflow:auto; max-height:90vh; }
-        .modal-header { background:var(--gradient-1); color:white; padding:1rem; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; }
-        .modal-body { padding:1rem; }
-
-        .cost-row { display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid rgba(0,0,0,0.04); }
-
-        @media (max-width:720px) {
-            .grid { grid-template-columns:1fr; }
-            .recipe-grid { grid-template-columns:1fr; }
-        }
+        /* AI Companion */
+        .ai-panel{position:sticky;top:80px;background:linear-gradient(180deg,#FFFFFF,#FFF9F0);border-radius:12px;padding:0.6rem;box-shadow:var(--card-shadow);height:70vh;display:flex;flex-direction:column;gap:0.6rem}
+        .ai-header{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0.2rem}
+        .ai-messages{flex:1;overflow:auto;padding:0.6rem;border-radius:8px;background:#F8FAFF;display:flex;flex-direction:column;gap:0.5rem}
+        .ai-msg{padding:0.5rem;border-radius:8px;background:white;box-shadow:0 6px 18px rgba(0,0,0,0.03);max-width:95%}
+        .ai-msg.user{background:linear-gradient(135deg,#FF6B9D,#C44569);color:white;align-self:flex-end}
+        .ai-input{display:flex;gap:0.5rem;align-items:center;margin-top:0.3rem}
+        .ai-input input{flex:1;padding:0.5rem;border-radius:8px;border:1px solid #EAEFF8}
+        .ai-actions{display:flex;gap:0.4rem;flex-wrap:wrap}
+        .hint{opacity:0.85;font-size:0.95rem}
+        @media(max-width:1060px){.ai-panel{position:relative;height:auto}}
     </style>
 </head>
 <body>
@@ -99,155 +70,175 @@
         <div class="header-content">
             <div>
                 <h1>🕯️ <span id="appTitle">Candle Workshop</span></h1>
-                <p id="appSubtitle">Professional candle production management tool</p>
+                <p class="subtitle" id="appSubtitle">Professional candle production management tool</p>
             </div>
             <div class="lang-selector" aria-label="Language selector">
-                <button class="lang-btn" data-lang="ro" onclick="setLang('ro', event)">🇷🇴</button>
                 <button class="lang-btn" data-lang="en" onclick="setLang('en', event)">🇬🇧</button>
-                <button class="lang-btn" data-lang="es" onclick="setLang('es', event)">🇪🇸</button>
-                <button class="lang-btn" data-lang="fr" onclick="setLang('fr', event)">🇫🇷</button>
-                <button class="lang-btn" data-lang="de" onclick="setLang('de', event)">🇩🇪</button>
-                <button class="lang-btn" data-lang="it" onclick="setLang('it', event)">🇮🇹</button>
+                <button class="lang-btn" data-lang="ro" onclick="setLang('ro', event)">🇷🇴</button>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        <div class="tabs" role="tablist" aria-label="Main tabs">
-            <button class="tab-btn active" id="tbtn0" onclick="showTab(0)" role="tab">Dashboard</button>
-            <button class="tab-btn" id="tbtn1" onclick="showTab(1)" role="tab">Inventory</button>
-            <button class="tab-btn" id="tbtn2" onclick="showTab(2)" role="tab">Recipes</button>
-            <button class="tab-btn" id="tbtn3" onclick="showTab(3)" role="tab">History</button>
-            <button class="tab-btn" id="tbtn4" onclick="showTab(4)" role="tab">Calendar</button>
-        </div>
-
-        <!-- Dashboard -->
-        <div class="card tab-content active" data-tab="0">
-            <h2 id="alertsTitle">Stock Alerts</h2>
-            <div id="alerts"></div>
-        </div>
-
-        <!-- Inventory -->
-        <div class="card tab-content" data-tab="1" style="display:none;">
-            <h2 id="invTitle">Add Material to Inventory</h2>
-            <div class="grid" style="margin-top:0.75rem;">
-                <div>
-                    <label id="nameLabel">Material Name</label>
-                    <input id="matName" type="text" placeholder="e.g. Soy wax">
-                </div>
-                <div>
-                    <label id="qtyLabel">Quantity</label>
-                    <input id="matQty" type="number" placeholder="e.g. 1000" min="0" step="any">
-                </div>
-                <div>
-                    <label id="unitLabel">Unit</label>
-                    <select id="matUnit">
-                        <option value="g">g</option>
-                        <option value="kg">kg</option>
-                        <option value="ml">ml</option>
-                        <option value="l">l</option>
-                        <option value="pcs">pcs</option>
-                    </select>
-                </div>
-                <div>
-                    <label id="priceLabel">Price per Unit (<span id="curr">USD</span>)</label>
-                    <input id="matPrice" type="number" step="0.01" placeholder="e.g. 12.50">
-                </div>
-                <div>
-                    <label id="minLabel">Min Stock Alert</label>
-                    <input id="matMin" type="number" placeholder="e.g. 200">
-                </div>
-            </div>
-            <div style="margin-top:0.6rem; display:flex; gap:0.5rem; align-items:center;">
-                <button class="btn" onclick="addMat()" id="addBtn">Add Material</button>
-                <button class="btn secondary" onclick="clearInventory()">Clear Inventory</button>
+    <div class="main-wrap">
+        <div class="left-col">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab(0)">Dashboard</button>
+                <button class="tab-btn" onclick="showTab(1)">Inventory</button>
+                <button class="tab-btn" onclick="showTab(2)">Recipes</button>
+                <button class="tab-btn" onclick="showTab(3)">History</button>
+                <button class="tab-btn" onclick="showTab(4)">Calendar</button>
             </div>
 
-            <h3 style="margin-top:1rem;" id="invListTitle">Materials Inventory</h3>
-            <div id="matList" style="margin-top:0.6rem;"></div>
-        </div>
-
-        <!-- Recipes -->
-        <div class="card tab-content" data-tab="2" style="display:none;">
-            <h2 id="recTitle">Pre-installed Recipes</h2>
-            <div class="recipe-grid" id="recList"></div>
-        </div>
-
-        <!-- History -->
-        <div class="card tab-content" data-tab="3" style="display:none;">
-            <h2 id="histTitle">Production History</h2>
-            <div id="histList"></div>
-        </div>
-
-        <!-- Calendar (light) -->
-        <div class="card tab-content" data-tab="4" style="display:none;">
-            <h2 id="calTitle">Schedule (simple)</h2>
-            <p style="opacity:0.8">Add events in Calendar tab (simple implementation).</p>
-            <div style="margin-top:0.6rem;" class="grid">
-                <div>
-                    <label id="typeLabel">Type</label>
-                    <select id="evType">
-                        <option value="prod">Production</option>
-                        <option value="sale">Sale</option>
-                    </select>
-                </div>
-                <div>
-                    <label id="titleLabel">Title</label>
-                    <input id="evTitle" type="text">
-                </div>
-                <div>
-                    <label id="dateLabel">Date</label>
-                    <input id="evDate" type="date">
-                </div>
-                <div>
-                    <label id="timeLabel">Time</label>
-                    <input id="evTime" type="time">
-                </div>
-            </div>
-            <div style="margin-top:0.6rem; display:flex; gap:0.5rem;">
-                <button class="btn" onclick="addEv()">Add Event</button>
-                <button class="btn secondary" onclick="exportCal()">Export Calendar</button>
+            <!-- Dashboard -->
+            <div class="card tab-content" data-tab="0" style="">
+                <h3 id="alertsTitle">Stock Alerts</h3>
+                <div id="alerts"></div>
             </div>
 
-            <h3 style="margin-top:1rem;">Scheduled Events</h3>
-            <div id="evList" style="margin-top:0.5rem;"></div>
+            <!-- Inventory -->
+            <div class="card tab-content" data-tab="1" style="display:none;">
+                <h3 id="invTitle">Add Material to Inventory</h3>
+                <div class="grid" style="margin-top:0.6rem;">
+                    <div>
+                        <label id="nameLabel">Material Name</label>
+                        <input id="matName" type="text" placeholder="e.g. Soy wax">
+                    </div>
+                    <div>
+                        <label id="qtyLabel">Quantity</label>
+                        <input id="matQty" type="number" step="any" placeholder="e.g. 1000">
+                    </div>
+                    <div>
+                        <label id="unitLabel">Unit</label>
+                        <select id="matUnit">
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
+                            <option value="ml">ml</option>
+                            <option value="l">l</option>
+                            <option value="pcs">pcs</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="priceLabel">Price per Unit (<span id="curr">USD</span>)</label>
+                        <input id="matPrice" type="number" step="0.01" placeholder="e.g. 12.50">
+                    </div>
+                    <div>
+                        <label id="minLabel">Min Stock Alert</label>
+                        <input id="matMin" type="number" placeholder="e.g. 200">
+                    </div>
+                </div>
+                <div style="margin-top:0.6rem;display:flex;gap:0.5rem">
+                    <button class="btn" onclick="addMat()">Add Material</button>
+                    <button class="btn secondary" onclick="clearInventory()">Clear Inventory</button>
+                </div>
+
+                <h4 style="margin-top:0.9rem">Materials Inventory</h4>
+                <div id="matList" style="margin-top:0.6rem"></div>
+            </div>
+
+            <!-- Recipes -->
+            <div class="card tab-content" data-tab="2" style="display:none;">
+                <h3 id="recTitle">Pre-installed Recipes</h3>
+                <div class="recipe-grid" id="recList" style="margin-top:0.6rem"></div>
+            </div>
+
+            <!-- History -->
+            <div class="card tab-content" data-tab="3" style="display:none;">
+                <h3 id="histTitle">Production History</h3>
+                <div id="histList" style="margin-top:0.6rem"></div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="card tab-content" data-tab="4" style="display:none;">
+                <h3 id="calTitle">Calendar</h3>
+                <div class="grid" style="margin-top:0.6rem;">
+                    <div>
+                        <label>Type</label>
+                        <select id="evType">
+                            <option value="prod">Production</option>
+                            <option value="sale">Sale</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Title</label>
+                        <input id="evTitle" type="text">
+                    </div>
+                    <div>
+                        <label>Date</label>
+                        <input id="evDate" type="date">
+                    </div>
+                    <div>
+                        <label>Time</label>
+                        <input id="evTime" type="time">
+                    </div>
+                </div>
+                <div style="margin-top:0.6rem;display:flex;gap:0.5rem">
+                    <button class="btn" onclick="addEv()">Add Event</button>
+                    <button class="btn secondary" onclick="exportCal()">Export Calendar</button>
+                </div>
+                <h4 style="margin-top:0.9rem">Scheduled Events</h4>
+                <div id="evList" style="margin-top:0.6rem"></div>
+            </div>
         </div>
+
+        <!-- AI Companion -->
+        <aside class="ai-panel" aria-label="AI Companion">
+            <div class="ai-header">
+                <div><strong>AI Companion</strong><div class="hint" style="font-size:0.85rem">Inventory-aware suggestions & shopping lists</div></div>
+                <div><button class="btn small" onclick="aiAnalyzeInventory()">Analyze Inventory</button></div>
+            </div>
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-msg" id="aiWelcome">Hi — I'm your local AI assistant. Ask me to analyze inventory, list ready recipes, or create shopping lists for a recipe.</div>
+            </div>
+
+            <div style="display:flex;gap:0.6rem;flex-direction:column">
+                <div class="ai-actions">
+                    <button class="btn small" onclick="aiSendQuick('list ready')">List ready recipes</button>
+                    <button class="btn small secondary" onclick="aiSendQuick('what can i make?')">What can I make?</button>
+                    <button class="btn small" onclick="aiSendQuick('shopping list for recipe 1')">Example: shopping list for recipe 1</button>
+                </div>
+                <div class="ai-input">
+                    <input id="aiInput" placeholder="Ask the assistant (e.g. 'Which recipes are ready?')" onkeydown="if(event.key==='Enter'){aiSend();}">
+                    <button class="btn small" onclick="aiSend()">Send</button>
+                </div>
+            </div>
+        </aside>
     </div>
 
-    <!-- Modal for recipe -->
+    <!-- Modal -->
     <div id="modal" class="modal" aria-hidden="true">
         <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modName">
             <div class="modal-header">
                 <div>
                     <h3 id="modName">Recipe</h3>
-                    <div id="modSubtitle" style="opacity:0.9;font-size:0.95rem;"></div>
+                    <div id="modSubtitle" style="opacity:0.9;font-size:0.95rem"></div>
                 </div>
                 <div>
                     <button class="btn small" onclick="closeMod()">Close</button>
                 </div>
             </div>
             <div class="modal-body">
-                <div style="display:flex; gap:0.6rem; align-items:center; margin-bottom:0.75rem;">
-                    <label style="min-width:70px; font-weight:700;">Quantity</label>
+                <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.6rem">
+                    <label style="min-width:70px;font-weight:800">Quantity</label>
                     <button class="btn small secondary" onclick="chgQty(-1)">-</button>
-                    <input id="prodQty" type="number" value="1" min="1" style="width:70px; text-align:center; padding:0.45rem; border-radius:8px; border:1px solid #EEE;">
+                    <input id="prodQty" type="number" value="1" min="1" style="width:80px;text-align:center;padding:0.45rem;border-radius:8px;border:1px solid #EEE">
                     <button class="btn small secondary" onclick="chgQty(1)">+</button>
+                    <button class="btn small" onclick="aiSuggestForRecipe()">Get shopping list (AI)</button>
                 </div>
 
                 <h4>Ingredients</h4>
-                <div id="modIng" style="margin-top:0.6rem;"></div>
+                <div id="modIng" style="margin-top:0.5rem"></div>
 
-                <div id="modMissing" style="margin-top:0.6rem;"></div>
+                <div id="modMissing" style="margin-top:0.6rem"></div>
 
-                <h4 style="margin-top:1rem;">Instructions</h4>
-                <ol id="modInstr" style="margin-top:0.6rem; padding-left:1.1rem;"></ol>
+                <h4 style="margin-top:1rem">Instructions</h4>
+                <ol id="modInstr" style="margin-top:0.5rem;padding-left:1.1rem"></ol>
 
-                <div class="cost-summary" style="margin-top:1rem; padding:0.8rem; border-radius:10px; background:linear-gradient(135deg,#FF6B9D,#C44569); color:white;">
+                <div class="cost-summary">
                     <div id="modCost"></div>
                 </div>
 
-                <div style="display:flex; gap:0.6rem; margin-top:0.9rem;">
-                    <button class="btn" onclick="produce()" id="prodBtn">Start Production</button>
+                <div style="display:flex;gap:0.6rem;margin-top:0.8rem">
+                    <button class="btn" onclick="produce()">Start Production</button>
                     <button class="btn secondary" onclick="closeMod()">Cancel</button>
                 </div>
             </div>
@@ -255,159 +246,148 @@
     </div>
 
     <script>
-    /*
-      Rewritten index.html
-      - Integrates Inventory with Recipes: missing items show an "Add to inventory" action which pre-fills
-        the inventory add form and switches to the Inventory tab.
-      - Fixed setLang bug and completed render flow.
-      - Uses localStorage for persistence.
-    */
-
-    // Translations (subset used by the UI)
+    // Localized subset
     const T = {
         en: {
             appTitle: "Candle Workshop",
             appSubtitle: "Professional candle production management tool",
-            tab0: "Dashboard", tab1: "Inventory", tab2: "Recipes", tab3: "History", tab4: "Calendar",
-            statLabel1: "Materials in Stock", statLabel2: "Low Stock Alerts", statLabel3: "Candles Produced", statLabel4: "Events Scheduled",
-            alertsTitle: "Stock Alerts",
-            nameLabel: "Material Name", qtyLabel: "Quantity", unitLabel: "Unit", priceLabel: "Price per Unit", curr: "USD",
-            minLabel: "Min Stock Alert", addBtn: "Add Material", invListTitle: "Materials Inventory",
-            recTitle: "Pre-installed Recipes", histTitle: "Production History", calTitle: "Calendar",
-            typeLabel: "Type", titleLabel: "Title", dateLabel: "Date", timeLabel: "Time",
-            addEvBtn: "Add Event", exportBtn: "Export Calendar", evListTitle: "Scheduled Events",
-            missingItems: "Missing items", addToInv: "Add to inventory", fillForm: "Pre-fill inventory form",
-            costLabel: "Cost", profitLabel: "Profit", priceLabelFinal: "Price"
+            missingItems: "missing items",
+            addToInv: "Add to inventory",
+            costLabel: "Cost", profitLabel: "Profit", priceLabelFinal: "Price",
+            curr: "USD"
         },
         ro: {
             appTitle: "Atelier Lumânări",
-            appSubtitle: "Instrument profesional pentru producția de lumânări",
-            tab0: "Dashboard", tab1: "Inventar", tab2: "Rețete", tab3: "Istoric", tab4: "Calendar",
-            statLabel1: "Materiale în stoc", statLabel2: "Alerte stoc mic", statLabel3: "Lumânări produse", statLabel4: "Evenimente programate",
-            alertsTitle: "Alerte Stoc",
-            nameLabel: "Nume Material", qtyLabel: "Cantitate", unitLabel: "Unitate", priceLabel: "Preț pe unitate", curr: "RON",
-            minLabel: "Alertă minimă", addBtn: "Adaugă Material", invListTitle: "Inventarul Materialelor",
-            recTitle: "Rețete Pre-instalate", histTitle: "Istoric Producție", calTitle: "Calendar",
-            typeLabel: "Tip", titleLabel: "Titlu", dateLabel: "Dată", timeLabel: "Timp",
-            addEvBtn: "Adaugă Eveniment", exportBtn: "Exportă Calendar", evListTitle: "Evenimente Programate",
-            missingItems: "Elemente lipsă", addToInv: "Adaugă în inventar", fillForm: "Completează formularul",
-            costLabel: "Cost", profitLabel: "Profit", priceLabelFinal: "Preț"
+            appSubtitle: "Instrument profesional",
+            missingItems: "elemente lipsă",
+            addToInv: "Adaugă în inventar",
+            costLabel: "Cost", profitLabel: "Profit", priceLabelFinal: "Preț",
+            curr: "RON"
         }
-        // Additional languages could be added similarly...
     };
 
-    const CR = { USD: 1.0, EUR: 0.92, RON: 4.0 }; // simple conversion table for example
+    const CR = { USD:1, EUR:0.92, RON:4.0 };
     let L = localStorage.getItem('lang') || 'en';
     let INV = JSON.parse(localStorage.getItem('inv') || '[]');
     let HIST = JSON.parse(localStorage.getItem('hist') || '[]');
     let EVS = JSON.parse(localStorage.getItem('evs') || '[]');
 
-    // Pre-installed recipes (subset; expanded for clarity)
+    // Five ready recipes
     const RECS = [
+        // Lavender
         {
-            id: 'r-lav-001',
-            name: { en: "Relaxing Lavender Candle", ro: "Lumânare Lavandă Relaxantă" },
-            ing: [
-                { n: { en: "Soy wax", ro: "Ceară de soia" }, q: 200, u: "g" },
-                { n: { en: "Lavender essential oil", ro: "Ulei esențial de lavandă" }, q: 5, u: "ml" },
-                { n: { en: "Cotton wick", ro: "Fitil de bumbac" }, q: 1, u: "pcs" },
-                { n: { en: "Glass container", ro: "Recipient sticlă" }, q: 1, u: "pcs" }
+            id:'r1',
+            name:{en:"Relaxing Lavender Candle", ro:"Lumânare Lavandă Relaxantă"},
+            ing:[
+                { n:{en:"Soy wax", ro:"Ceară de soia"}, q:200, u:'g' },
+                { n:{en:"Lavender essential oil", ro:"Ulei de lavandă"}, q:5, u:'ml' },
+                { n:{en:"Cotton wick", ro:"Fitil de bumbac"}, q:1, u:'pcs' },
+                { n:{en:"Glass container", ro:"Recipient sticlă"}, q:1, u:'pcs' }
             ],
-            instr: [
-                { en: "Clean container and center the wick.", ro: "Curăță recipientul și centrează fitilul." },
-                { en: "Melt wax to 70°C.", ro: "Topește ceara la 70°C." },
-                { en: "Add fragrance and pour when ready.", ro: "Adaugă uleiul și toarnă." }
+            instr:[
+                {en:"Clean container and center the wick.", ro:"Curăță recipientul și centrează fitilul."},
+                {en:"Melt wax to 70°C and stir.", ro:"Topește ceara la 70°C și amestecă."},
+                {en:"Add essential oil and pour into container.", ro:"Adaugă uleiul esențial și toarnă în recipient."}
             ],
-            pm: 60 // profit margin %
+            pm:60
         },
+        // Vanilla & Cinnamon
         {
-            id: 'r-van-001',
-            name: { en: "Vanilla & Cinnamon Candle", ro: "Lumânare Vanilie & Scorțișoară" },
-            ing: [
-                { n: { en: "Paraffin wax", ro: "Ceară de parafină" }, q: 250, u: "g" },
-                { n: { en: "Vanilla essence", ro: "Esență de vanilie" }, q: 8, u: "ml" },
-                { n: { en: "Cinnamon essence", ro: "Esență de scorțișoară" }, q: 3, u: "ml" },
-                { n: { en: "Cotton wick", ro: "Fitil de bumbac" }, q: 1, u: "pcs" }
+            id:'r2',
+            name:{en:"Vanilla & Cinnamon Candle", ro:"Lumânare Vanilie & Scorțișoară"},
+            ing:[
+                { n:{en:"Paraffin wax", ro:"Ceară parafină"}, q:250, u:'g' },
+                { n:{en:"Vanilla essence", ro:"Esență vanilie"}, q:8, u:'ml' },
+                { n:{en:"Cinnamon essence", ro:"Esență scorțișoară"}, q:3, u:'ml' },
+                { n:{en:"Cotton wick", ro:"Fitil de bumbac"}, q:1, u:'pcs' }
             ],
-            instr: [
-                { en: "Fix wick and melt wax to 80°C.", ro: "Fixează fitilul și topește ceara la 80°C." },
-                { en: "Mix fragrances and pour slowly.", ro: "Amestecă esențele și toarnă încet." }
+            instr:[
+                {en:"Fix wick and melt wax to 80°C.", ro:"Fixează fitilul și topește ceara la 80°C."},
+                {en:"Mix fragrances and pour slowly.", ro:"Amestecă esențele și toarnă încet."}
             ],
-            pm: 60
+            pm:60
+        },
+        // Citrus
+        {
+            id:'r3',
+            name:{en:"Energizing Citrus Candle", ro:"Lumânare Citrice Energizantă"},
+            ing:[
+                { n:{en:"Soy wax", ro:"Ceară de soia"}, q:200, u:'g' },
+                { n:{en:"Orange oil", ro:"Ulei portocală"}, q:5, u:'ml' },
+                { n:{en:"Lemon oil", ro:"Ulei lămâie"}, q:5, u:'ml' },
+                { n:{en:"Cotton wick", ro:"Fitil de bumbac"}, q:1, u:'pcs' }
+            ],
+            instr:[
+                {en:"Melt wax to 70°C.", ro:"Topește ceara la 70°C."},
+                {en:"Add citrus oils at 60°C and pour.", ro:"Adaugă uleiurile citrice la 60°C și toarnă."}
+            ],
+            pm:55
+        },
+        // Rose & Bergamot
+        {
+            id:'r4',
+            name:{en:"Rose & Bergamot Candle", ro:"Lumânare Trandafir & Bergamotă"},
+            ing:[
+                { n:{en:"Soy wax", ro:"Ceară de soia"}, q:220, u:'g' },
+                { n:{en:"Rose fragrance", ro:"Parfum trandafir"}, q:6, u:'ml' },
+                { n:{en:"Bergamot oil", ro:"Ulei bergamotă"}, q:3, u:'ml' },
+                { n:{en:"Cotton wick", ro:"Fitil de bumbac"}, q:1, u:'pcs' }
+            ],
+            instr:[
+                {en:"Prepare container and wick.", ro:"Pregătește recipientul și fitilul."},
+                {en:"Melt, mix fragrances at 60-65°C and pour.", ro:"Topește, amestecă parfumurile la 60-65°C și toarnă."}
+            ],
+            pm:65
+        },
+        // Coffee & Cocoa
+        {
+            id:'r5',
+            name:{en:"Coffee & Cocoa Candle", ro:"Lumânare Cafea & Cacao"},
+            ing:[
+                { n:{en:"Paraffin wax", ro:"Ceară parafină"}, q:240, u:'g' },
+                { n:{en:"Coffee fragrance", ro:"Parfum cafea"}, q:7, u:'ml' },
+                { n:{en:"Cocoa absolute", ro:"Cacao"}, q:4, u:'ml' },
+                { n:{en:"Cotton wick", ro:"Fitil de bumbac"}, q:1, u:'pcs' }
+            ],
+            instr:[
+                {en:"Melt wax to recommended temp.", ro:"Topește ceara la temperatura recomandată."},
+                {en:"Add fragrances, stir, pour and cure.", ro:"Adaugă parfumurile, amestecă, toarnă și lasă la maturat."}
+            ],
+            pm:60
         }
     ];
 
     // Utilities
-    function setLang(l, ev) {
-        if (!T[l]) return;
+    function fmtAmt(amt){
+        const v = Number(amt) || 0;
+        return `${v.toFixed(2)} ${T[L]?.curr || 'USD'}`;
+    }
+
+    function setLang(l, ev){
+        if(!T[l]) return;
         L = l;
         localStorage.setItem('lang', l);
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-lang') === l));
-        // Update textual nodes mapped by ids in translations
-        const mapKeys = ['appTitle','appSubtitle','tab0','tab1','tab2','tab3','tab4',
-                         'alertsTitle','nameLabel','qtyLabel','unitLabel','priceLabel','curr','minLabel',
-                         'addBtn','invListTitle','recTitle','histTitle','calTitle',
-                         'typeLabel','titleLabel','dateLabel','timeLabel','addEvBtn','exportBtn','evListTitle'];
-        const trans = T[l];
-        if (trans) {
-            // Titles
-            document.getElementById('appTitle').textContent = trans.appTitle;
-            document.getElementById('appSubtitle').textContent = trans.appSubtitle;
-            // Tabs (we'll update text of tab buttons)
-            const tb = document.querySelectorAll('.tab-btn');
-            if (tb && tb.length >= 5) {
-                tb[0].textContent = trans.tab0;
-                tb[1].textContent = trans.tab1;
-                tb[2].textContent = trans.tab2;
-                tb[3].textContent = trans.tab3;
-                tb[4].textContent = trans.tab4;
-            }
-            // Labels
-            document.getElementById('alertsTitle').textContent = trans.alertsTitle;
-            document.getElementById('nameLabel').textContent = trans.nameLabel;
-            document.getElementById('qtyLabel').textContent = trans.qtyLabel;
-            document.getElementById('unitLabel').textContent = trans.unitLabel;
-            document.getElementById('priceLabel').textContent = trans.priceLabel;
-            document.getElementById('curr').textContent = trans.curr;
-            document.getElementById('minLabel').textContent = trans.minLabel;
-            document.getElementById('addBtn').textContent = trans.addBtn;
-            document.getElementById('invListTitle').textContent = trans.invListTitle;
-            document.getElementById('recTitle').textContent = trans.recTitle;
-            document.getElementById('histTitle').textContent = trans.histTitle;
-            document.getElementById('calTitle').textContent = trans.calTitle;
-        }
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang')===l));
+        document.getElementById('appTitle').textContent = T[L].appTitle;
+        document.getElementById('appSubtitle').textContent = T[L].appSubtitle;
+        document.getElementById('curr').textContent = T[L].curr;
         render();
     }
 
-    function conv(amt, from, to) {
-        if (!from || !to || from === to) return amt;
-        const usd = amt / (CR[from] || 1);
-        return usd * (CR[to] || 1);
-    }
-
-    function fmtAmt(amt) {
-        const v = Number(amt) || 0;
-        return `${v.toFixed(2)} ${T[L].curr || 'USD'}`;
-    }
-
-    function showTab(i) {
-        document.querySelectorAll('.tab-content').forEach((el, idx) => {
-            const visible = idx === i;
-            el.style.display = visible ? '' : 'none';
+    function showTab(i){
+        document.querySelectorAll('.tab-content').forEach((c, idx) => {
+            c.style.display = idx === i ? '' : 'none';
         });
         document.querySelectorAll('.tab-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
     }
 
-    // Add material to inventory (regular add or pre-filled)
-    function addMat(prefill) {
+    function addMat(prefill){
         const nameEl = document.getElementById('matName');
         const qtyEl = document.getElementById('matQty');
         const unitEl = document.getElementById('matUnit');
         const priceEl = document.getElementById('matPrice');
         const minEl = document.getElementById('matMin');
-
-        if (prefill) {
-            // prefill form and keep user in inventory
+        if(prefill){
             nameEl.value = prefill.n || '';
             qtyEl.value = prefill.q || '';
             unitEl.value = prefill.u || 'pcs';
@@ -416,81 +396,66 @@
             showTab(1);
             return;
         }
-
-        const n = nameEl.value.trim();
+        const n = (nameEl.value||'').trim();
         const q = parseFloat(qtyEl.value);
         const u = unitEl.value;
         const p = parseFloat(priceEl.value);
         const m = parseFloat(minEl.value);
-
-        if (!n || isNaN(q) || isNaN(p) || isNaN(m)) {
-            alert('Please fill all fields (correct types).');
-            return;
-        }
-
-        // If name already exists (fuzzy), merge quantities and update price (simple behavior)
-        const existing = INV.find(it => it.n.toLowerCase() === n.toLowerCase() && it.u === u);
-        if (existing) {
-            existing.q = Number(existing.q) + Number(q);
-            existing.p = p; // override with latest price
+        if(!n || isNaN(q) || isNaN(p) || isNaN(m)){ alert('Please fill all fields correctly.'); return; }
+        const existing = INV.find(it => it.n.toLowerCase()===n.toLowerCase() && it.u===u);
+        if(existing){
+            existing.q = Number(existing.q)+Number(q);
+            existing.p = p;
         } else {
             INV.push({ id: Date.now(), n, q, u, p, c: T[L].curr || 'USD', m });
         }
         localStorage.setItem('inv', JSON.stringify(INV));
-        nameEl.value = ''; qtyEl.value = ''; priceEl.value = ''; minEl.value = '';
+        nameEl.value=''; qtyEl.value=''; priceEl.value=''; minEl.value='';
         render();
         showTab(1);
     }
 
-    function clearInventory() {
-        if (!confirm('Clear entire inventory?')) return;
-        INV = [];
+    function clearInventory(){
+        if(!confirm('Clear inventory?')) return;
+        INV=[];
         localStorage.setItem('inv', JSON.stringify(INV));
         render();
     }
 
-    function delMat(id) {
-        if (!confirm('Delete this material?')) return;
+    function delMat(id){
+        if(!confirm('Delete this item?')) return;
         INV = INV.filter(i => i.id !== id);
         localStorage.setItem('inv', JSON.stringify(INV));
         render();
     }
 
-    // Calculate costs and missing items
-    function calcCost(rec, qty = 1) {
-        let tot = 0;
-        const miss = [];
-        const brk = [];
-        rec.ing.forEach(ing => {
+    function calcCost(rec, qty=1){
+        let tot=0; const miss=[]; const brk=[];
+        rec.ing.forEach(ing=>{
             const nm = (ing.n[L] || ing.n.en).toLowerCase();
-            // Find matching inventory item: matches if inventory name contains ingredient name or vice-versa
             const mat = INV.find(m => {
                 const mn = m.n.toLowerCase();
                 return mn.includes(nm) || nm.includes(mn) || mn.split(' ')[0] === nm.split(' ')[0];
             });
-            if (mat) {
-                // compute unit cost: if mat unit is kg and ing unit is g => adjust
-                let unitCost = mat.p; // in mat.c currency
-                const matUnit = mat.u, ingUnit = ing.u;
+            if(mat){
+                let unitCost = mat.p;
                 let costPerNeededUnit = unitCost;
-                // convert kg->g or l->ml
-                if (matUnit === 'kg' && ingUnit === 'g') costPerNeededUnit = unitCost / 1000;
-                if (matUnit === 'l' && ingUnit === 'ml') costPerNeededUnit = unitCost / 1000;
-                // assume same currency for simplicity
+                if(mat.u==='kg' && ing.u==='g') costPerNeededUnit = unitCost/1000;
+                if(mat.u==='l' && ing.u==='ml') costPerNeededUnit = unitCost/1000;
                 const costForIngredient = costPerNeededUnit * ing.q * qty;
                 tot += costForIngredient;
-                brk.push({ n: (ing.n[L] || ing.n.en), q: ing.q * qty, u: ing.u, c: costForIngredient });
+                brk.push({ n:(ing.n[L]||ing.n.en), q:ing.q*qty, u:ing.u, c:costForIngredient });
             } else {
-                miss.push({ n: (ing.n[L] || ing.n.en), q: ing.q * qty, u: ing.u });
+                miss.push({ n:(ing.n[L]||ing.n.en), q:ing.q*qty, u:ing.u });
             }
         });
-        const prf = tot * (rec.pm / 100);
-        return { tot, prf, sale: tot + prf, miss, brk };
+        const prf = tot * ((rec.pm||60)/100);
+        return { tot, prf, sale: tot+prf, miss, brk };
     }
 
-    // Modal logic
+    // Modal
     let CUR_REC = null;
-    function openMod(i) {
+    function openMod(i){
         CUR_REC = i;
         const r = RECS[i];
         document.getElementById('modName').textContent = (r.name[L] || r.name.en);
@@ -500,259 +465,310 @@
         document.getElementById('modal').classList.add('active');
         document.getElementById('modal').setAttribute('aria-hidden','false');
     }
-
-    function closeMod() {
+    function closeMod(){
         CUR_REC = null;
         document.getElementById('modal').classList.remove('active');
         document.getElementById('modal').setAttribute('aria-hidden','true');
     }
-
-    function chgQty(d) {
+    function chgQty(d){
         const inp = document.getElementById('prodQty');
-        let v = parseInt(inp.value || '0') + d;
-        if (isNaN(v) || v < 1) v = 1;
+        let v = parseInt(inp.value||'0') + d;
+        if(isNaN(v) || v<1) v=1;
         inp.value = v;
         updMod();
     }
-
-    function updMod() {
-        if (CUR_REC === null) return;
+    function updMod(){
+        if(CUR_REC===null) return;
         const r = RECS[CUR_REC];
-        const q = parseInt(document.getElementById('prodQty').value || '1');
+        const q = parseInt(document.getElementById('prodQty').value||'1');
         const c = calcCost(r, q);
-
-        // Ingredients breakdown (available ones)
-        document.getElementById('modIng').innerHTML = c.brk.map(b =>
-            `<div class="material-row"><div><strong>${escapeHtml(b.n)}</strong><div style="opacity:0.8;font-size:0.9rem">${b.q} ${b.u}</div></div><div style="text-align:right">${fmtAmt(b.c)}</div></div>`
+        document.getElementById('modIng').innerHTML = c.brk.map(b=>
+            `<div class="material-row"><div><strong>${escapeHtml(b.n)}</strong><div style="opacity:0.82;font-size:0.9rem">${b.q} ${b.u}</div></div><div style="text-align:right">${fmtAmt(b.c)}</div></div>`
         ).join('');
-
-        // Missing items area (interactive)
-        const missingHtml = c.miss.length === 0 ? '<div style="margin-top:0.4rem;color:green;font-weight:700;">All ingredients available</div>' :
+        // missing
+        const missingHtml = c.miss.length===0 ? `<div style="color:green;font-weight:800">All ingredients available</div>` :
             `<div class="missing-badge"><strong>⚠️ ${T[L].missingItems}:</strong><ul style="margin:0.5rem 0 0 0.8rem;">` +
-            c.miss.map(m => `<li style="margin:0.35rem 0; display:flex; justify-content:space-between; align-items:center;">
+            c.miss.map((m,mi)=>`<li style="margin:0.35rem 0;display:flex;justify-content:space-between;align-items:center;">
                 <span>${escapeHtml(m.n)}: ${m.q} ${m.u}</span>
-                <span style="display:flex; gap:0.4rem; margin-left:0.6rem;">
-                    <button class="btn small" onclick='prefillAdd(${CUR_REC}, ${q}, ${JSON.stringify(escapeHtml(m.n))}, ${m.q}, "${m.u}")'>${T[L].addToInv}</button>
-                </span>
-            </li>`).join('') +
-            `</ul></div>`;
-
+                <span><button class="btn small" onclick='prefillAdd(${CUR_REC}, ${q}, ${JSON.stringify(m.n)}, ${m.q}, "${m.u}")'>${T[L].addToInv}</button></span>
+            </li>`).join('') + `</ul></div>`;
         document.getElementById('modMissing').innerHTML = missingHtml;
-
-        // Instructions
-        document.getElementById('modInstr').innerHTML = r.instr.map(s => `<li>${escapeHtml(s[L] || s.en)}</li>`).join('');
-
-        // Cost
+        document.getElementById('modInstr').innerHTML = r.instr.map(s=>`<li>${escapeHtml(s[L]||s.en)}</li>`).join('');
         document.getElementById('modCost').innerHTML = `
-            <div class="cost-row"><span>${T[L].costLabel || 'Cost'}</span><span>${fmtAmt(c.tot)}</span></div>
-            <div class="cost-row"><span>${T[L].profitLabel || 'Profit'} (${r.pm}%)</span><span>${fmtAmt(c.prf)}</span></div>
-            <div class="cost-row" style="font-weight:800; border-top:1px solid rgba(255,255,255,0.15); margin-top:0.4rem;"><span>${T[L].priceLabelFinal || 'Price'}</span><span>${fmtAmt(c.sale)}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>${T[L].costLabel}</span><strong>${fmtAmt(c.tot)}</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>${T[L].profitLabel} (${r.pm}%)</span><strong>${fmtAmt(c.prf)}</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px;font-weight:900"><span>${T[L].priceLabelFinal}</span><strong>${fmtAmt(c.sale)}</strong></div>
         `;
     }
 
-    // prefillAdd called when clicking Add from missing items in modal
-    function prefillAdd(recIndex, qty, nameEscaped, reqQty, unit) {
-        // nameEscaped is already escaped in call; convert to plain string
-        const name = (typeof nameEscaped === 'string') ? nameEscaped : String(nameEscaped);
-        // open inventory tab and prefill form
-        const pre = { n: name, q: reqQty, u: unit, p: '', m: '' };
+    function prefillAdd(recIndex, qty, name, reqQty, unit){
+        // prefill the inventory add form with needed ingredient for convenience
+        const pre = { n: name, q: reqQty || 0, u: unit || 'pcs', p:'', m:'' };
         addMat(pre);
     }
 
-    // produce: deduct inventory where available, add history item
-    function produce() {
-        if (CUR_REC === null) return;
+    function produce(){
+        if(CUR_REC===null) return;
         const r = RECS[CUR_REC];
-        const q = parseInt(document.getElementById('prodQty').value || '1');
+        const q = parseInt(document.getElementById('prodQty').value||'1');
         const c = calcCost(r, q);
-        if (c.miss.length > 0) {
-            if (!confirm('Some items are missing. Produce anyway (will not deduct missing items)?')) {
-                return;
-            }
+        if(c.miss.length>0){
+            if(!confirm('Some items are missing. Produce anyway (will not deduct missing items)?')) return;
         }
-        // Deduct quantities for matching inventory items
-        r.ing.forEach(ing => {
-            const nm = (ing.n[L] || ing.n.en).toLowerCase();
+        r.ing.forEach(ing=>{
+            const nm = (ing.n[L]||ing.n.en).toLowerCase();
             const mat = INV.find(m => {
                 const mn = m.n.toLowerCase();
                 return mn.includes(nm) || nm.includes(mn) || mn.split(' ')[0] === nm.split(' ')[0];
             });
-            if (mat) {
-                // adjust units if needed (kg/g, l/ml)
+            if(mat){
                 let needed = ing.q * q;
-                // if mat is in kg and ing in g, convert needed to kg
-                if (mat.u === 'kg' && ing.u === 'g') needed = needed / 1000;
-                if (mat.u === 'l' && ing.u === 'ml') needed = needed / 1000;
+                if(mat.u==='kg' && ing.u==='g') needed = needed/1000;
+                if(mat.u==='l' && ing.u==='ml') needed = needed/1000;
                 mat.q = Number(mat.q) - needed;
-                if (mat.q < 0) mat.q = 0;
+                if(mat.q < 0) mat.q = 0;
             }
         });
-        // persist inventory
         localStorage.setItem('inv', JSON.stringify(INV));
-        // add to history
-        HIST.unshift({ id: Date.now(), rec: r.name[L] || r.name.en, qty: q, date: new Date().toISOString() });
+        HIST.unshift({ id:Date.now(), rec: (r.name[L]||r.name.en), qty:q, date:new Date().toISOString() });
         localStorage.setItem('hist', JSON.stringify(HIST));
         render();
         closeMod();
         alert('Production recorded.');
     }
 
-    // Events/calendar (light)
-    function addEv() {
+    // Calendar
+    function addEv(){
         const t = document.getElementById('evType').value;
-        const ti = document.getElementById('evTitle').value || '';
-        const d = document.getElementById('evDate').value || '';
-        const tm = document.getElementById('evTime').value || '';
-        if (!d) return alert('Select a date.');
-        EVS.unshift({ id: Date.now(), type: t, title: ti, date: d, time: tm });
+        const ti = (document.getElementById('evTitle').value||'').trim();
+        const d = document.getElementById('evDate').value;
+        const tm = document.getElementById('evTime').value;
+        if(!d) return alert('Select a date.');
+        EVS.unshift({ id:Date.now(), type:t, title:ti, date:d, time:tm });
         localStorage.setItem('evs', JSON.stringify(EVS));
         render();
-        document.getElementById('evTitle').value = '';
-        document.getElementById('evDate').value = '';
-        document.getElementById('evTime').value = '';
+        document.getElementById('evTitle').value=''; document.getElementById('evDate').value=''; document.getElementById('evTime').value='';
     }
-
-    function exportCal() {
-        if (!EVS.length) return alert('No events to export.');
-        const data = EVS.map(e => `${e.date} ${e.time || ''} - ${e.type} - ${e.title}`).join('\n');
-        // simple copy to clipboard
-        navigator.clipboard && navigator.clipboard.writeText(data).then(() => alert('Calendar copied to clipboard.'));
+    function exportCal(){
+        if(!EVS.length) return alert('No events to export.');
+        const data = EVS.map(e=>`${e.date} ${e.time||''} - ${e.type} - ${e.title}`).join('\n');
+        navigator.clipboard&&navigator.clipboard.writeText(data).then(()=>alert('Calendar copied to clipboard.'));
     }
+    function delEv(id){ EVS = EVS.filter(e=>e.id!==id); localStorage.setItem('evs', JSON.stringify(EVS)); render(); }
+    function delHist(id){ HIST = HIST.filter(h=>h.id!==id); localStorage.setItem('hist', JSON.stringify(HIST)); render(); }
 
-    function delEv(id) {
-        EVS = EVS.filter(e => e.id !== id);
-        localStorage.setItem('evs', JSON.stringify(EVS));
-        render();
-    }
-
-    function delHist(id) {
-        HIST = HIST.filter(h => h.id !== id);
-        localStorage.setItem('hist', JSON.stringify(HIST));
-        render();
-    }
-
-    // Render UI
-    function render() {
+    // Render
+    function render(){
         // Inventory list
         const matList = document.getElementById('matList');
-        if (matList) {
-            if (INV.length === 0) {
-                matList.innerHTML = '<div style="opacity:0.8">No materials yet.</div>';
-            } else {
-                matList.innerHTML = INV.map(m => `
-                    <div class="material-row" title="${escapeHtml(m.n)}">
-                        <div>
-                            <strong>${escapeHtml(m.n)}</strong>
-                            <div style="opacity:0.8;font-size:0.9rem">${m.q} ${m.u} • ${fmtAmt(m.p)} / ${m.c || ''}</div>
-                        </div>
-                        <div class="material-actions">
-                            <button class="btn small" onclick="prefillEdit(${m.id})">Edit</button>
-                            <button class="btn small danger" onclick="delMat(${m.id})">Delete</button>
-                        </div>
+        if(matList){
+            if(INV.length===0) matList.innerHTML = '<div style="opacity:0.85">No materials yet.</div>';
+            else matList.innerHTML = INV.map(m=>`
+                <div class="material-row">
+                    <div><strong>${escapeHtml(m.n)}</strong><div style="opacity:0.82;font-size:0.9rem">${m.q} ${m.u} • ${fmtAmt(m.p)}</div></div>
+                    <div class="material-actions">
+                        <button class="btn small" onclick="prefillEdit(${m.id})">Edit</button>
+                        <button class="btn small danger" onclick="delMat(${m.id})">Delete</button>
                     </div>
-                `).join('');
-            }
+                </div>
+            `).join('');
         }
 
-        // Recipes list with missing items highlighted and actions to prefill inventory
+        // Recipes
         const recList = document.getElementById('recList');
-        if (recList) {
-            recList.innerHTML = RECS.map((r, i) => {
-                const c = calcCost(r, 1);
+        if(recList){
+            recList.innerHTML = RECS.map((r,i)=>{
+                const c = calcCost(r,1);
                 const missing = c.miss.length;
-                const missHtml = missing === 0 ? `<div style="color:green;font-weight:700">All ingredients available</div>` :
-                    `<div class="missing-badge">${missing} ${T[L].missingItems}</div>`;
-                return `<div class="recipe-preview" onclick="openMod(${i})" role="button" tabindex="0" onkeydown="if(event.key==='Enter'){openMod(${i})}">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                const missingHtml = missing===0 ? `<div style="color:green;font-weight:700">Ready</div>` : `<div class="missing-badge">${missing} ${T[L].missingItems}</div>`;
+                return `<div class="recipe-preview" onclick="openMod(${i})" tabindex="0" role="button" onkeydown="if(event.key==='Enter'){openMod(${i})}">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start">
                         <div>
-                            <h3 style="font-family:'Playfair Display',serif;margin:0;">${escapeHtml(r.name[L] || r.name.en)}</h3>
-                            <div style="opacity:0.85;font-size:0.9rem;margin-top:0.25rem">${(r.ing.length)} ingredients</div>
+                            <h4 style="margin:0;font-family:'Playfair Display'">${escapeHtml(r.name[L]||r.name.en)}</h4>
+                            <div style="opacity:0.85;font-size:0.9rem;margin-top:0.2rem">${r.ing.length} ingredients</div>
                         </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:800">${fmtAmt(c.sale)}</div>
+                        <div style="text-align:right">
+                            <div style="font-weight:900">${fmtAmt(c.sale)}</div>
                             <div style="opacity:0.8;font-size:0.85rem">(${r.pm}% profit)</div>
                         </div>
                     </div>
-                    <div style="margin-top:0.6rem;">${missHtml}</div>
+                    <div style="margin-top:0.5rem;display:flex;justify-content:space-between;align-items:center">
+                        ${missingHtml}
+                        <div style="display:flex;gap:0.4rem">
+                            <button class="btn small" onclick="event.stopPropagation(); aiSuggestForRecipe(${i})">AI List</button>
+                            <button class="btn small secondary" onclick="event.stopPropagation(); openMod(${i})">Open</button>
+                        </div>
+                    </div>
                 </div>`;
             }).join('');
         }
 
-        // Alerts (low stock)
+        // Alerts
         const alerts = document.getElementById('alerts');
-        if (alerts) {
+        if(alerts){
             const low = INV.filter(m => !isNaN(m.m) && Number(m.q) <= Number(m.m));
-            if (low.length === 0) {
-                alerts.innerHTML = '<div style="opacity:0.8">All good — no low stock alerts.</div>';
-            } else {
-                alerts.innerHTML = low.map(l => `<div class="alert" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A); padding:0.6rem; border-radius:8px;">
-                    <strong>${escapeHtml(l.n)}</strong> — ${l.q} ${l.u} (min ${l.m})</div>`).join('');
-            }
+            if(low.length===0) alerts.innerHTML = '<div style="opacity:0.85">All good — no low stock alerts.</div>';
+            else alerts.innerHTML = low.map(l=>`<div style="padding:0.6rem;border-radius:8px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);margin-bottom:6px"><strong>${escapeHtml(l.n)}</strong> — ${l.q} ${l.u} (min ${l.m})</div>`).join('');
         }
 
         // History
         const histList = document.getElementById('histList');
-        if (histList) {
-            histList.innerHTML = HIST.length ? HIST.map(h => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-radius:8px;background:linear-gradient(135deg,#fff,#fff9f0);margin-bottom:0.4rem">
-                    <div>
-                        <strong>${escapeHtml(h.rec)}</strong>
-                        <div style="opacity:0.8;font-size:0.85rem">${h.qty} pcs • ${new Date(h.date).toLocaleString()}</div>
-                    </div>
-                    <div><button class="btn small danger" onclick="delHist(${h.id})">Delete</button></div>
-                </div>
-            `).join('') : '<div style="opacity:0.8">No production history yet.</div>';
+        if(histList){
+            histList.innerHTML = HIST.length ? HIST.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-radius:8px;background:linear-gradient(135deg,#fff,#fff9f0);margin-bottom:0.4rem">
+                <div><strong>${escapeHtml(h.rec)}</strong><div style="opacity:0.8;font-size:0.85rem">${h.qty} pcs • ${new Date(h.date).toLocaleString()}</div></div>
+                <div><button class="btn small danger" onclick="delHist(${h.id})">Delete</button></div>
+            </div>`).join('') : '<div style="opacity:0.85">No production history yet.</div>';
         }
 
         // Events
         const evList = document.getElementById('evList');
-        if (evList) {
-            evList.innerHTML = EVS.length ? EVS.map(e => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-radius:8px;background:linear-gradient(135deg,#fff,#fff9f0);margin-bottom:0.4rem">
-                    <div>
-                        <strong>${escapeHtml(e.title || e.type)}</strong>
-                        <div style="opacity:0.8;font-size:0.85rem">${e.date} ${e.time || ''}</div>
-                    </div>
-                    <div><button class="btn small danger" onclick="delEv(${e.id})">Delete</button></div>
-                </div>
-            `).join('') : '<div style="opacity:0.8">No events scheduled.</div>';
+        if(evList){
+            evList.innerHTML = EVS.length ? EVS.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-radius:8px;background:linear-gradient(135deg,#fff,#fff9f0);margin-bottom:0.4rem">
+                <div><strong>${escapeHtml(e.title||e.type)}</strong><div style="opacity:0.8;font-size:0.85rem">${e.date} ${e.time||''}</div></div>
+                <div><button class="btn small danger" onclick="delEv(${e.id})">Delete</button></div>
+            </div>`).join('') : '<div style="opacity:0.85">No events scheduled.</div>';
         }
 
-        // Update any modal content if open
-        if (CUR_REC !== null) updMod();
+        // Update modal if open
+        if(CUR_REC !== null) updMod();
     }
 
-    // small helper to prefill edit (quick edit via inventory form)
-    function prefillEdit(id) {
-        const item = INV.find(i => i.id === id);
-        if (!item) return;
+    function prefillEdit(id){
+        const item = INV.find(i=>i.id===id);
+        if(!item) return;
         document.getElementById('matName').value = item.n;
         document.getElementById('matQty').value = item.q;
         document.getElementById('matUnit').value = item.u;
         document.getElementById('matPrice').value = item.p;
         document.getElementById('matMin').value = item.m;
-        // After editing, delete original so user can press Add to create new one (simple approach)
         delMat(item.id);
         showTab(1);
     }
 
-    // helper to escape HTML in dynamic strings
-    function escapeHtml(s) {
-        if (typeof s !== 'string') return s;
-        return s.replace(/[&<>"']/g, function (m) {
-            return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m];
-        });
+    function escapeHtml(s){ if(typeof s!=='string') return s; return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+
+    // --- AI Companion (local rule-based) ---
+    function appendAiMsg(text, isUser=false){
+        const box = document.getElementById('aiMessages');
+        const el = document.createElement('div');
+        el.className = 'ai-msg' + (isUser ? ' user':'' );
+        el.innerHTML = escapeHtml(text).replace(/\n/g,'<br>');
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
     }
 
-    // Initialize UI
-    (function init() {
-        // mark language button active
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-lang') === L));
-        setLang(L);
-        render();
-    })();
+    function aiSendQuick(text){
+        document.getElementById('aiInput').value = text;
+        aiSend();
+    }
 
-    // Expose some functions to global since they're used inline
+    function aiSend(){
+        const input = document.getElementById('aiInput');
+        const text = (input.value||'').trim();
+        if(!text) return;
+        appendAiMsg(text,true);
+        input.value = '';
+        // simple parsing
+        const low = text.toLowerCase();
+        if(low.includes('ready') || low.includes('what can i make') || low.includes('list ready')){
+            aiListReadyRecipes();
+        } else if(low.match(/shopping list for recipe (\d+)/)){
+            const idx = parseInt(low.match(/shopping list for recipe (\d+)/)[1],10)-1;
+            aiShoppingListFor(idx);
+        } else if(low.includes('shopping list') && CUR_REC !== null){
+            aiShoppingListFor(CUR_REC);
+        } else if(low.includes('analyze') || low.includes('inventory')){
+            aiListReadyRecipes();
+        } else {
+            // fallback: try to detect "recipe X"
+            const m = low.match(/recipe (\d+)/);
+            if(m) aiShoppingListFor(parseInt(m[1],10)-1);
+            else appendAiMsg("I can analyze your inventory, list recipes you can make, and prepare shopping lists for a chosen recipe. Try: 'List ready recipes' or 'Shopping list for recipe 2'.");
+        }
+    }
+
+    function aiAnalyzeInventory(){
+        appendAiMsg('Analyzing inventory...');
+        aiListReadyRecipes();
+    }
+
+    function aiListReadyRecipes(){
+        const ready = [];
+        const partial = [];
+        RECS.forEach((r,i)=>{
+            const c = calcCost(r,1);
+            if(c.miss.length===0) ready.push({i, name: r.name[L]||r.name.en});
+            else if(c.miss.length < r.ing.length) partial.push({i, name: r.name[L]||r.name.en, missing:c.miss});
+        });
+        let resp = '';
+        if(ready.length===0) resp += 'No recipes are fully ready to create.\n';
+        else resp += 'Recipes ready to create:\n' + ready.map(r=>`- (${r.i+1}) ${r.name}`).join('\n') + '\n';
+        if(partial.length){
+            resp += '\nPartially ready recipes (missing items listed):\n' + partial.map(p=>{
+                const mlist = p.missing.map(mm=>`${mm.n} (${mm.q} ${mm.u})`).join(', ');
+                return `- (${p.i+1}) ${p.name} — missing: ${mlist}`;
+            }).join('\n');
+        }
+        appendAiMsg(resp);
+    }
+
+    function aiSuggestForRecipe(index){
+        // invoked from button: open assistant with missing list
+        aiShoppingListFor(index);
+    }
+
+    function aiShoppingListFor(index){
+        if(typeof index !== 'number' || !RECS[index]) { appendAiMsg('Recipe not found. Provide recipe number (1..5).'); return; }
+        const r = RECS[index];
+        const q = (CUR_REC===index) ? parseInt(document.getElementById('prodQty').value||'1') : 1;
+        const c = calcCost(r,q);
+        if(c.miss.length===0){
+            appendAiMsg(`Recipe "${r.name[L]||r.name.en}" is fully available for qty ${q}. Ready to produce.`);
+            return;
+        }
+        // build shopping list grouped by unit
+        const grouped = c.miss.reduce((acc,mi)=>{
+            const key = mi.u || 'pcs';
+            if(!acc[key]) acc[key]=[];
+            acc[key].push(mi);
+            return acc;
+        },{});
+        let resp = `Shopping list for "${r.name[L]||r.name.en}" (qty ${q}):\n`;
+        Object.keys(grouped).forEach(u=>{
+            resp += `\n${u}:\n` + grouped[u].map(mi=>`- ${mi.n}: ${mi.q} ${mi.u}`).join('\n');
+        });
+        resp += "\n\nYou can pre-fill the inventory form for each missing item by clicking the 'Add to inventory' button in the recipe modal, or press the buttons below to prefill general entries.";
+        appendAiMsg(resp);
+
+        // also append action buttons inside AI panel via DOM (non-HTML in message)
+        // show quick action to prefill first missing item
+        // For simplicity: add a UI button under AI panel area
+        const aiBox = document.getElementById('aiMessages');
+        const actionDiv = document.createElement('div');
+        actionDiv.style.display='flex'; actionDiv.style.gap='6px';
+        c.miss.slice(0,5).forEach((mi,miIdx)=>{
+            const b = document.createElement('button');
+            b.className='btn small';
+            b.textContent = `Prefill ${mi.n}`;
+            b.onclick = ()=>{ prefillAdd(index,q,mi.n,mi.q,mi.u); appendAiMsg(`Prefilled inventory form with ${mi.n}`); };
+            actionDiv.appendChild(b);
+        });
+        const copyBtn = document.createElement('button');
+        copyBtn.className='btn small secondary';
+        copyBtn.textContent='Copy shopping list';
+        copyBtn.onclick = ()=>{ navigator.clipboard && navigator.clipboard.writeText( aiTextForClipboard(r,q,c.miss) ).then(()=>appendAiMsg('Shopping list copied to clipboard.')); };
+        actionDiv.appendChild(copyBtn);
+        aiBox.appendChild(actionDiv);
+        aiBox.scrollTop = aiBox.scrollHeight;
+    }
+
+    function aiTextForClipboard(r,q,miss){
+        let s = `Shopping list for "${r.name[L]||r.name.en}" (qty ${q}):\n`;
+        miss.forEach(m=> s += `- ${m.n}: ${m.q} ${m.u}\n`);
+        return s;
+    }
+
+    // Expose functions
     window.setLang = setLang;
     window.showTab = showTab;
     window.addMat = addMat;
@@ -768,6 +784,18 @@
     window.delEv = delEv;
     window.delHist = delHist;
     window.prefillEdit = prefillEdit;
+    window.aiSend = aiSend;
+    window.aiSendQuick = aiSendQuick;
+    window.aiAnalyzeInventory = aiAnalyzeInventory;
+    window.aiSuggestForRecipe = aiSuggestForRecipe;
+
+    // Init
+    (function init(){
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang')===L));
+        setLang(L);
+        render();
+    })();
+
     </script>
 </body>
 </html>
