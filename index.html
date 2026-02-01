@@ -14,36 +14,17 @@
   --text:#2e2e2e;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
 .container{max-width:1100px;margin:auto;padding:30px}
 header h1{margin:0;color:var(--accent)}
 header p{opacity:.7}
-.card{
-  background:var(--card);
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:30px;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-}
+.card{background:var(--card);border-radius:14px;padding:20px;margin-bottom:30px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
 h2{margin-top:0;color:var(--accent)}
 table{width:100%;border-collapse:collapse}
 th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
 th{background:var(--soft)}
 input{width:80px;padding:6px;border-radius:6px;border:1px solid #ccc}
-button{
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:600;
-}
+button{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:5px}
 .badge{padding:4px 10px;border-radius:999px;font-size:12px}
 .ready{background:#d4edda;color:#155724}
 .cure{background:#fff3cd;color:#856404}
@@ -58,6 +39,18 @@ footer{text-align:center;opacity:.6;margin-top:60px}
   <h1>NOOR – CandleCraft</h1>
   <p>Recipes · Inventory · Cost · Production</p>
 </header>
+
+<!-- INVENTORY -->
+<div class="card">
+<h2>📦 Inventory</h2>
+<table>
+<tr><th>Item</th><th>Stock</th></tr>
+<tr><td>Wax (g)</td><td><input id="invWax" oninput="saveData()"></td></tr>
+<tr><td>Fragrance (g)</td><td><input id="invFrag" oninput="saveData()"></td></tr>
+<tr><td>Wicks</td><td><input id="invWick" oninput="saveData()"></td></tr>
+<tr><td>Jars</td><td><input id="invJar" oninput="saveData()"></td></tr>
+</table>
+</div>
 
 <!-- RECIPES -->
 <div class="card">
@@ -86,7 +79,7 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
 <tr>
 <td>Vanilla Bliss</td>
-<td><input class="qty" value="10" oninput="saveData()"></td>
+<td><input class="qty" value="10" oninput="updateInventory()"></td>
 <td><input type="date" class="pour" onchange="updateCalendar()"></td>
 <td class="readyDate">–</td>
 <td class="status">–</td>
@@ -103,11 +96,28 @@ const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
 
 // SAVE / LOAD
 function saveData(){
-  localStorage.setItem('noorData', document.querySelector('.container').innerHTML);
+  const data={
+    container: document.querySelector('.container').innerHTML,
+    inventory:{
+      wax:+document.getElementById('invWax').value||0,
+      frag:+document.getElementById('invFrag').value||0,
+      wick:+document.getElementById('invWick').value||0,
+      jar:+document.getElementById('invJar').value||0
+    }
+  };
+  localStorage.setItem('noorData', JSON.stringify(data));
 }
+
 function loadData(){
-  const d = localStorage.getItem('noorData');
-  if(d) document.querySelector('.container').innerHTML = d;
+  const d=localStorage.getItem('noorData');
+  if(d){
+    const obj=JSON.parse(d);
+    document.querySelector('.container').innerHTML=obj.container;
+    document.getElementById('invWax').value=obj.inventory.wax;
+    document.getElementById('invFrag').value=obj.inventory.frag;
+    document.getElementById('invWick').value=obj.inventory.wick;
+    document.getElementById('invJar').value=obj.inventory.jar;
+  }
 }
 loadData();
 
@@ -118,9 +128,9 @@ function calc(){
     let wax=+r.querySelector(".wax").value||0;
     let frag=+r.querySelector(".frag").value||0;
     let wick=+r.querySelector(".wick").value||0;
-    let cost=wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
-    r.querySelector(".cost").innerText = cost.toFixed(2);
-    r.querySelector(".price").innerText = (cost*2.5).toFixed(2);
+    let cost=wax*COSTS.wax+frag*COSTS.frag+wick*COSTS.wick+COSTS.jar;
+    r.querySelector(".cost").innerText=cost.toFixed(2);
+    r.querySelector(".price").innerText=(cost*2.5).toFixed(2);
   });
   saveData();
 }
@@ -153,14 +163,45 @@ function updateCalendar(){
     r.querySelector(".status").innerHTML=
       today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
   });
+  updateInventory();
   saveData();
 }
 
-// INITIAL CALC
+// INVENTORY UPDATE
+function updateInventory(){
+  let waxStock = +document.getElementById('invWax').value || 0;
+  let fragStock = +document.getElementById('invFrag').value || 0;
+  let wickStock = +document.getElementById('invWick').value || 0;
+  let jarStock = +document.getElementById('invJar').value || 0;
+
+  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
+    if(i===0) return;
+    const qty = +r.querySelector(".qty").value || 0;
+    const recipe = r.querySelector("td:first-child input")?.value || "Vanilla Bliss";
+    const wax = +document.querySelector(`#recipes tr:nth-child(2) .wax`)?.value || 50;
+    const frag = +document.querySelector(`#recipes tr:nth-child(2) .frag`)?.value || 5;
+    const wick = +document.querySelector(`#recipes tr:nth-child(2) .wick`)?.value || 1;
+
+    // scade din stoc doar dacă qty > 0
+    waxStock = Math.max(0, waxStock - wax*qty);
+    fragStock = Math.max(0, fragStock - frag*qty);
+    wickStock = Math.max(0, wickStock - wick*qty);
+    jarStock = Math.max(0, jarStock - qty);
+  });
+
+  document.getElementById('invWax').value = waxStock;
+  document.getElementById('invFrag').value = fragStock;
+  document.getElementById('invWick').value = wickStock;
+  document.getElementById('invJar').value = jarStock;
+
+  saveData();
+}
+
+// INITIAL
 calc();
 updateCalendar();
+updateInventory();
 </script>
 
 </body>
 </html>
-
