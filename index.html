@@ -28,6 +28,8 @@ button{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-r
 .badge{padding:4px 10px;border-radius:999px;font-size:12px}
 .ready{background:#d4edda;color:#155724}
 .cure{background:#fff3cd;color:#856404}
+#aiChat{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:10px;border-radius:8px;margin-top:10px;background:#fafafa;}
+.aiInput{width:80%;padding:6px;border-radius:6px;border:1px solid #ccc;margin-top:5px;}
 footer{text-align:center;opacity:.6;margin-top:60px}
 </style>
 </head>
@@ -37,7 +39,7 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 
 <header>
   <h1>NOOR – CandleCraft</h1>
-  <p>Recipes · Inventory · Cost · Production</p>
+  <p>Recipes · Inventory · Cost · Production · AI Helper</p>
 </header>
 
 <!-- INVENTORY -->
@@ -45,11 +47,12 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <h2>📦 Inventory</h2>
 <table>
 <tr><th>Item</th><th>Stock</th></tr>
-<tr><td>Wax (g)</td><td><input id="invWax" oninput="saveData()"></td></tr>
-<tr><td>Fragrance (g)</td><td><input id="invFrag" oninput="saveData()"></td></tr>
-<tr><td>Wicks</td><td><input id="invWick" oninput="saveData()"></td></tr>
-<tr><td>Jars</td><td><input id="invJar" oninput="saveData()"></td></tr>
+<tr><td>Wax (g)</td><td><input id="invWax"></td></tr>
+<tr><td>Fragrance (g)</td><td><input id="invFrag"></td></tr>
+<tr><td>Wicks</td><td><input id="invWick"></td></tr>
+<tr><td>Jars</td><td><input id="invJar"></td></tr>
 </table>
+<button onclick="recalcInventory()">🔄 Recalc Inventory</button>
 </div>
 
 <!-- RECIPES -->
@@ -79,12 +82,20 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
 <tr>
 <td><input value="Vanilla Bliss" class="recipeName"></td>
-<td><input class="qty" value="10" oninput="updateInventory()"></td>
+<td><input class="qty" value="10" oninput="recalcInventory()"></td>
 <td><input type="date" class="pour" onchange="updateCalendar()"></td>
 <td class="readyDate">–</td>
 <td class="status">–</td>
 </tr>
 </table>
+</div>
+
+<!-- AI HELPER -->
+<div class="card">
+<h2>🤖 AI Helper</h2>
+<div id="aiChat"></div>
+<input class="aiInput" id="aiInput" placeholder="Ask AI..." />
+<button onclick="askAI()">Ask AI</button>
 </div>
 
 <footer>© 2026 NOOR CandleCraft</footer>
@@ -94,8 +105,9 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <script>
 // COSTS
 const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
+let initStock={wax:0,frag:0,wick:0,jar:0};
 
-// LOAD / SAVE VALUES
+// SAVE / LOAD
 function saveData(){
   const data={
     inventory:{
@@ -107,8 +119,6 @@ function saveData(){
     recipes:[],
     calendar:[]
   };
-
-  // recipes
   document.querySelectorAll("#recipes tr").forEach((r,i)=>{
     if(i===0) return;
     data.recipes.push({
@@ -118,8 +128,6 @@ function saveData(){
       wick:+r.querySelector(".wick").value||0
     });
   });
-
-  // calendar
   document.querySelectorAll("#calendar tr").forEach((r,i)=>{
     if(i===0) return;
     data.calendar.push({
@@ -128,25 +136,21 @@ function saveData(){
       pour:r.querySelector(".pour").value
     });
   });
-
   localStorage.setItem("noorData",JSON.stringify(data));
 }
 
-// load
 function loadData(){
   const d=localStorage.getItem("noorData");
   if(!d) return;
   const data=JSON.parse(d);
-
   // inventory
   document.getElementById('invWax').value=data.inventory.wax;
   document.getElementById('invFrag').value=data.inventory.frag;
   document.getElementById('invWick').value=data.inventory.wick;
   document.getElementById('invJar').value=data.inventory.jar;
-
+  initStock={...data.inventory};
   // recipes
   const recipeTable=document.getElementById("recipes");
-  // clear old rows
   while(recipeTable.rows.length>1) recipeTable.deleteRow(1);
   data.recipes.forEach(r=>{
     const row=recipeTable.insertRow();
@@ -157,20 +161,18 @@ function loadData(){
 <td class="cost">–</td>
 <td class="price">–</td>`;
   });
-
   // calendar
   const calTable=document.getElementById("calendar");
   while(calTable.rows.length>1) calTable.deleteRow(1);
   data.calendar.forEach(c=>{
     const row=calTable.insertRow();
     row.innerHTML=`<td><input class="recipeName" value="${c.name}"></td>
-<td><input class="qty" value="${c.qty}" oninput="updateInventory()"></td>
+<td><input class="qty" value="${c.qty}" oninput="recalcInventory()"></td>
 <td><input type="date" class="pour" value="${c.pour}" onchange="updateCalendar()"></td>
 <td class="readyDate">–</td>
 <td class="status">–</td>`;
   });
 }
-
 loadData();
 
 // CALC COST
@@ -200,7 +202,7 @@ function addRecipe(){
   saveData();
 }
 
-// CALENDAR UPDATE
+// CALENDAR
 function updateCalendar(){
   const today=new Date();
   document.querySelectorAll("#calendar tr").forEach((r,i)=>{
@@ -213,16 +215,16 @@ function updateCalendar(){
     r.querySelector(".readyDate").innerText=d.toISOString().split('T')[0];
     r.querySelector(".status").innerHTML=today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
   });
-  updateInventory();
+  recalcInventory();
   saveData();
 }
 
-// INVENTORY UPDATE
-function updateInventory(){
-  let waxStock=+document.getElementById('invWax').value||0;
-  let fragStock=+document.getElementById('invFrag').value||0;
-  let wickStock=+document.getElementById('invWick').value||0;
-  let jarStock=+document.getElementById('invJar').value||0;
+// INVENTORY
+function recalcInventory(){
+  let waxStock=initStock.wax;
+  let fragStock=initStock.frag;
+  let wickStock=initStock.wick;
+  let jarStock=initStock.jar;
 
   document.querySelectorAll("#calendar tr").forEach((r,i)=>{
     if(i===0) return;
@@ -248,12 +250,38 @@ function updateInventory(){
   saveData();
 }
 
+// AI HELPER (MOCK)
+function askAI(){
+  const input=document.getElementById('aiInput').value.trim();
+  if(!input) return;
+  const chat=document.getElementById('aiChat');
+  const userMsg=`<div><b>You:</b> ${input}</div>`;
+  chat.innerHTML+=userMsg;
+
+  // MOCK RESPONSE
+  let response="🤖 Sorry, I need more data!";
+  if(/price/i.test(input)){
+    response="💰 Suggested price = Cost * 2.5 (default)";
+  } else if(/wax/i.test(input)){
+    response="🧴 You can increase wax by 10% for stronger scent.";
+  } else if(/inventory|stock/i.test(input)){
+    response="📦 Check inventory above; recalc if needed.";
+  } else if(/recipe/i.test(input)){
+    response="📝 Try adjusting fragrance for better aroma balance.";
+  }
+  chat.innerHTML+=`<div><b>AI:</b> ${response}</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  document.getElementById('aiInput').value="";
+}
+
 // INITIAL
 calc();
 updateCalendar();
-updateInventory();
+recalcInventory();
 </script>
 
 </body>
 </html>
+
+
 
