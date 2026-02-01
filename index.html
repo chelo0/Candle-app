@@ -59,18 +59,6 @@ footer{text-align:center;opacity:.6;margin-top:60px}
   <p>Recipes · Inventory · Cost · Production</p>
 </header>
 
-<!-- INVENTORY -->
-<div class="card">
-<h2>📦 Inventory</h2>
-<table>
-<tr><th>Item</th><th>Stock</th></tr>
-<tr><td>Wax (g)</td><td><input id="invWax"></td></tr>
-<tr><td>Fragrance (g)</td><td><input id="invFrag"></td></tr>
-<tr><td>Wicks</td><td><input id="invWick"></td></tr>
-<tr><td>Jars</td><td><input id="invJar"></td></tr>
-</table>
-</div>
-
 <!-- RECIPES -->
 <div class="card">
 <h2>🧪 Recipes</h2>
@@ -81,9 +69,9 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 </tr>
 <tr>
 <td><input value="Vanilla Bliss"></td>
-<td><input class="wax" value="50"></td>
-<td><input class="frag" value="5"></td>
-<td><input class="wick" value="1"></td>
+<td><input class="wax" value="50" oninput="calc()"></td>
+<td><input class="frag" value="5" oninput="calc()"></td>
+<td><input class="wick" value="1" oninput="calc()"></td>
 <td class="cost">–</td>
 <td class="price">–</td>
 </tr>
@@ -93,13 +81,13 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 
 <!-- CALENDAR -->
 <div class="card">
-<h2>📅 Production</h2>
+<h2>📅 Production Calendar</h2>
 <table id="calendar">
 <tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
 <tr>
 <td>Vanilla Bliss</td>
-<td><input class="qty" value="10"></td>
-<td><input type="date" class="pour"></td>
+<td><input class="qty" value="10" oninput="saveData()"></td>
+<td><input type="date" class="pour" onchange="updateCalendar()"></td>
 <td class="readyDate">–</td>
 <td class="status">–</td>
 </tr>
@@ -113,55 +101,66 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <script>
 const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
 
-function save(){
- localStorage.setItem("noor",document.body.innerHTML);
+// SAVE / LOAD
+function saveData(){
+  localStorage.setItem('noorData', document.querySelector('.container').innerHTML);
 }
-function load(){
- const d=localStorage.getItem("noor");
- if(d) document.body.innerHTML=d;
+function loadData(){
+  const d = localStorage.getItem('noorData');
+  if(d) document.querySelector('.container').innerHTML = d;
 }
-load();
+loadData();
 
+// CALCULATOR COST
 function calc(){
- document.querySelectorAll("#recipes tr").forEach((r,i)=>{
-  if(i===0) return;
-  let wax=+r.querySelector(".wax").value||0;
-  let frag=+r.querySelector(".frag").value||0;
-  let wick=+r.querySelector(".wick").value||0;
-  let cost=wax*COSTS.wax+frag*COSTS.frag+wick*COSTS.wick+COSTS.jar;
-  r.querySelector(".cost").innerText=cost.toFixed(2);
-  r.querySelector(".price").innerText=(cost*2.5).toFixed(2);
- });
- save();
+  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
+    if(i===0) return;
+    let wax=+r.querySelector(".wax").value||0;
+    let frag=+r.querySelector(".frag").value||0;
+    let wick=+r.querySelector(".wick").value||0;
+    let cost=wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
+    r.querySelector(".cost").innerText = cost.toFixed(2);
+    r.querySelector(".price").innerText = (cost*2.5).toFixed(2);
+  });
+  saveData();
 }
 
+// ADD RECIPE
 function addRecipe(){
- const t=document.getElementById("recipes");
- t.insertRow().innerHTML=`
+  const t=document.getElementById("recipes");
+  const row=t.insertRow();
+  row.innerHTML=`
 <td><input></td>
-<td><input class="wax"></td>
-<td><input class="frag"></td>
-<td><input class="wick"></td>
+<td><input class="wax" oninput="calc()"></td>
+<td><input class="frag" oninput="calc()"></td>
+<td><input class="wick" oninput="calc()"></td>
 <td class="cost">–</td>
 <td class="price">–</td>`;
+  saveData();
 }
 
-document.addEventListener("input",calc);
+// CALENDAR UPDATE
+function updateCalendar(){
+  const today=new Date();
+  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
+    if(i===0) return;
+    const pour=r.querySelector(".pour").value;
+    if(!pour) return;
+    const d=new Date(pour);
+    const ready=new Date(d);
+    ready.setDate(d.getDate()+7);
+    r.querySelector(".readyDate").innerText=d.toISOString().split('T')[0];
+    r.querySelector(".status").innerHTML=
+      today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
+  });
+  saveData();
+}
 
-document.addEventListener("change",()=>{
- document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-  if(i===0) return;
-  let p=r.querySelector(".pour");
-  if(!p.value) return;
-  let d=new Date(p.value);
-  d.setDate(d.getDate()+7);
-  r.querySelector(".readyDate").innerText=d.toISOString().split("T")[0];
-  r.querySelector(".status").innerHTML=
-    new Date()>=d?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
- });
- save();
-});
+// INITIAL CALC
+calc();
+updateCalendar();
 </script>
 
 </body>
 </html>
+
