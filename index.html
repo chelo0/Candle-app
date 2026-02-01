@@ -78,7 +78,7 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 <table id="calendar">
 <tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
 <tr>
-<td>Vanilla Bliss</td>
+<td><input value="Vanilla Bliss" class="recipeName"></td>
 <td><input class="qty" value="10" oninput="updateInventory()"></td>
 <td><input type="date" class="pour" onchange="updateCalendar()"></td>
 <td class="readyDate">–</td>
@@ -92,43 +92,95 @@ footer{text-align:center;opacity:.6;margin-top:60px}
 </div>
 
 <script>
+// COSTS
 const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
 
-// SAVE / LOAD
+// LOAD / SAVE VALUES
 function saveData(){
   const data={
-    container: document.querySelector('.container').innerHTML,
     inventory:{
       wax:+document.getElementById('invWax').value||0,
       frag:+document.getElementById('invFrag').value||0,
       wick:+document.getElementById('invWick').value||0,
       jar:+document.getElementById('invJar').value||0
-    }
+    },
+    recipes:[],
+    calendar:[]
   };
-  localStorage.setItem('noorData', JSON.stringify(data));
+
+  // recipes
+  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
+    if(i===0) return;
+    data.recipes.push({
+      name:r.querySelector("td:nth-child(1) input").value,
+      wax:+r.querySelector(".wax").value||0,
+      frag:+r.querySelector(".frag").value||0,
+      wick:+r.querySelector(".wick").value||0
+    });
+  });
+
+  // calendar
+  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
+    if(i===0) return;
+    data.calendar.push({
+      name:r.querySelector(".recipeName").value,
+      qty:+r.querySelector(".qty").value||0,
+      pour:r.querySelector(".pour").value
+    });
+  });
+
+  localStorage.setItem("noorData",JSON.stringify(data));
 }
 
+// load
 function loadData(){
-  const d=localStorage.getItem('noorData');
-  if(d){
-    const obj=JSON.parse(d);
-    document.querySelector('.container').innerHTML=obj.container;
-    document.getElementById('invWax').value=obj.inventory.wax;
-    document.getElementById('invFrag').value=obj.inventory.frag;
-    document.getElementById('invWick').value=obj.inventory.wick;
-    document.getElementById('invJar').value=obj.inventory.jar;
-  }
+  const d=localStorage.getItem("noorData");
+  if(!d) return;
+  const data=JSON.parse(d);
+
+  // inventory
+  document.getElementById('invWax').value=data.inventory.wax;
+  document.getElementById('invFrag').value=data.inventory.frag;
+  document.getElementById('invWick').value=data.inventory.wick;
+  document.getElementById('invJar').value=data.inventory.jar;
+
+  // recipes
+  const recipeTable=document.getElementById("recipes");
+  // clear old rows
+  while(recipeTable.rows.length>1) recipeTable.deleteRow(1);
+  data.recipes.forEach(r=>{
+    const row=recipeTable.insertRow();
+    row.innerHTML=`<td><input value="${r.name}"></td>
+<td><input class="wax" value="${r.wax}" oninput="calc()"></td>
+<td><input class="frag" value="${r.frag}" oninput="calc()"></td>
+<td><input class="wick" value="${r.wick}" oninput="calc()"></td>
+<td class="cost">–</td>
+<td class="price">–</td>`;
+  });
+
+  // calendar
+  const calTable=document.getElementById("calendar");
+  while(calTable.rows.length>1) calTable.deleteRow(1);
+  data.calendar.forEach(c=>{
+    const row=calTable.insertRow();
+    row.innerHTML=`<td><input class="recipeName" value="${c.name}"></td>
+<td><input class="qty" value="${c.qty}" oninput="updateInventory()"></td>
+<td><input type="date" class="pour" value="${c.pour}" onchange="updateCalendar()"></td>
+<td class="readyDate">–</td>
+<td class="status">–</td>`;
+  });
 }
+
 loadData();
 
-// CALCULATOR COST
+// CALC COST
 function calc(){
   document.querySelectorAll("#recipes tr").forEach((r,i)=>{
     if(i===0) return;
-    let wax=+r.querySelector(".wax").value||0;
-    let frag=+r.querySelector(".frag").value||0;
-    let wick=+r.querySelector(".wick").value||0;
-    let cost=wax*COSTS.wax+frag*COSTS.frag+wick*COSTS.wick+COSTS.jar;
+    const wax=+r.querySelector(".wax").value||0;
+    const frag=+r.querySelector(".frag").value||0;
+    const wick=+r.querySelector(".wick").value||0;
+    const cost=wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
     r.querySelector(".cost").innerText=cost.toFixed(2);
     r.querySelector(".price").innerText=(cost*2.5).toFixed(2);
   });
@@ -139,8 +191,7 @@ function calc(){
 function addRecipe(){
   const t=document.getElementById("recipes");
   const row=t.insertRow();
-  row.innerHTML=`
-<td><input></td>
+  row.innerHTML=`<td><input></td>
 <td><input class="wax" oninput="calc()"></td>
 <td><input class="frag" oninput="calc()"></td>
 <td><input class="wick" oninput="calc()"></td>
@@ -160,8 +211,7 @@ function updateCalendar(){
     const ready=new Date(d);
     ready.setDate(d.getDate()+7);
     r.querySelector(".readyDate").innerText=d.toISOString().split('T')[0];
-    r.querySelector(".status").innerHTML=
-      today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
+    r.querySelector(".status").innerHTML=today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
   });
   updateInventory();
   saveData();
@@ -169,30 +219,31 @@ function updateCalendar(){
 
 // INVENTORY UPDATE
 function updateInventory(){
-  let waxStock = +document.getElementById('invWax').value || 0;
-  let fragStock = +document.getElementById('invFrag').value || 0;
-  let wickStock = +document.getElementById('invWick').value || 0;
-  let jarStock = +document.getElementById('invJar').value || 0;
+  let waxStock=+document.getElementById('invWax').value||0;
+  let fragStock=+document.getElementById('invFrag').value||0;
+  let wickStock=+document.getElementById('invWick').value||0;
+  let jarStock=+document.getElementById('invJar').value||0;
 
   document.querySelectorAll("#calendar tr").forEach((r,i)=>{
     if(i===0) return;
-    const qty = +r.querySelector(".qty").value || 0;
-    const recipe = r.querySelector("td:first-child input")?.value || "Vanilla Bliss";
-    const wax = +document.querySelector(`#recipes tr:nth-child(2) .wax`)?.value || 50;
-    const frag = +document.querySelector(`#recipes tr:nth-child(2) .frag`)?.value || 5;
-    const wick = +document.querySelector(`#recipes tr:nth-child(2) .wick`)?.value || 1;
+    const qty=+r.querySelector(".qty").value||0;
+    const recipeName=r.querySelector(".recipeName").value;
+    const recipeRow=Array.from(document.querySelectorAll("#recipes tr")).find((tr,j)=>j>0 && tr.querySelector("td input").value===recipeName);
+    if(!recipeRow) return;
+    const wax=+recipeRow.querySelector(".wax").value||0;
+    const frag=+recipeRow.querySelector(".frag").value||0;
+    const wick=+recipeRow.querySelector(".wick").value||0;
 
-    // scade din stoc doar dacă qty > 0
-    waxStock = Math.max(0, waxStock - wax*qty);
-    fragStock = Math.max(0, fragStock - frag*qty);
-    wickStock = Math.max(0, wickStock - wick*qty);
-    jarStock = Math.max(0, jarStock - qty);
+    waxStock=Math.max(0,waxStock - wax*qty);
+    fragStock=Math.max(0,fragStock - frag*qty);
+    wickStock=Math.max(0,wickStock - wick*qty);
+    jarStock=Math.max(0,jarStock - qty);
   });
 
-  document.getElementById('invWax').value = waxStock;
-  document.getElementById('invFrag').value = fragStock;
-  document.getElementById('invWick').value = wickStock;
-  document.getElementById('invJar').value = jarStock;
+  document.getElementById('invWax').value=waxStock;
+  document.getElementById('invFrag').value=fragStock;
+  document.getElementById('invWick').value=wickStock;
+  document.getElementById('invJar').value=jarStock;
 
   saveData();
 }
@@ -205,3 +256,4 @@ updateInventory();
 
 </body>
 </html>
+
