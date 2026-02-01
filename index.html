@@ -1,285 +1,1025 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-<meta charset="UTF-8">
-<title>NOOR – CandleCraft</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier Lumânări - Tool Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --secondary: #D4A373;
+            --accent: #E8C4A0;
+            --dark: #2C1810;
+            --light: #FAF7F2;
+            --warning: #D97706;
+            --success: #059669;
+            --danger: #DC2626;
+            --shadow: rgba(139, 69, 19, 0.15);
+        }
 
-<style>
-:root{
-  --bg:#f7f4ef;
-  --card:#ffffff;
-  --accent:#6b4f3f;
-  --soft:#e6d8cf;
-  --text:#2e2e2e;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
-.container{max-width:1100px;margin:auto;padding:30px}
-header h1{margin:0;color:var(--accent)}
-header p{opacity:.7}
-.card{background:var(--card);border-radius:14px;padding:20px;margin-bottom:30px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
-h2{margin-top:0;color:var(--accent)}
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-th{background:var(--soft)}
-input{width:80px;padding:6px;border-radius:6px;border:1px solid #ccc}
-button{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:5px}
-.badge{padding:4px 10px;border-radius:999px;font-size:12px}
-.ready{background:#d4edda;color:#155724}
-.cure{background:#fff3cd;color:#856404}
-#aiChat{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:10px;border-radius:8px;margin-top:10px;background:#fafafa;}
-.aiInput{width:80%;padding:6px;border-radius:6px;border:1px solid #ccc;margin-top:5px;}
-footer{text-align:center;opacity:.6;margin-top:60px}
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #FAF7F2 0%, #F5EBE0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: var(--light);
+            padding: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid var(--secondary);
+            color: var(--primary);
+            padding: 0.9rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .tab-btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .card h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn:hover {
+            background: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .item-list {
+            margin-top: 1rem;
+        }
+
+        .item {
+            background: var(--light);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .item:hover {
+            transform: translateX(5px);
+        }
+
+        .item.low-stock {
+            border-left-color: var(--warning);
+            background: #FEF3C7;
+        }
+
+        .item.out-of-stock {
+            border-left-color: var(--danger);
+            background: #FEE2E2;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            font-size: 1.3rem;
+        }
+
+        .item-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            border-left: 4px solid var(--warning);
+            color: #92400E;
+        }
+
+        .alert-danger {
+            background: #FEE2E2;
+            border-left: 4px solid var(--danger);
+            color: #7F1D1D;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            margin-bottom: 1.5rem;
+            border-top: 4px solid var(--secondary);
+        }
+
+        .recipe-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .ingredients {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .ingredients h4 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .ingredients ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .ingredients li {
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .ingredients li:before {
+            content: "🕯️";
+            position: absolute;
+            left: 0;
+        }
+
+        .calendar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-item {
+            background: var(--light);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .event-item.sale {
+            border-left-color: var(--success);
+        }
+
+        .price-calculator {
+            background: linear-gradient(135deg, var(--light) 0%, white 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .calc-result {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.3rem;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .calc-result .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .stat-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <div class="header">
+        <h1>🕯️ Atelier Lumânări</h1>
+        <p>Instrument profesional pentru gestionarea producției de lumânări</p>
+    </div>
 
-<header>
-  <h1>NOOR – CandleCraft</h1>
-  <p>Recipes · Inventory · Cost · Production · AI Helper</p>
-</header>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="showTab('inventory')">Stoc Materiale</button>
+            <button class="tab-btn" onclick="showTab('recipes')">Rețete</button>
+            <button class="tab-btn" onclick="showTab('calendar')">Calendar Producție</button>
+            <button class="tab-btn" onclick="showTab('calculator')">Calculator Preț</button>
+        </div>
 
-<!-- INVENTORY -->
-<div class="card">
-<h2>📦 Inventory</h2>
-<table>
-<tr><th>Item</th><th>Stock</th></tr>
-<tr><td>Wax (g)</td><td><input id="invWax"></td></tr>
-<tr><td>Fragrance (g)</td><td><input id="invFrag"></td></tr>
-<tr><td>Wicks</td><td><input id="invWick"></td></tr>
-<tr><td>Jars</td><td><input id="invJar"></td></tr>
-</table>
-<button onclick="recalcInventory()">🔄 Recalc Inventory</button>
-</div>
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalItems">0</h3>
+                    <p>Materiale în Stoc</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="lowStockCount">0</h3>
+                    <p>Alerte Stoc Scăzut</p>
+                </div>
+                <div class="stat-card">
+                    <h3>10</h3>
+                    <p>Rețete Disponibile</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="eventsCount">0</h3>
+                    <p>Evenimente Programate</p>
+                </div>
+            </div>
 
-<!-- RECIPES -->
-<div class="card">
-<h2>🧪 Recipes</h2>
-<table id="recipes">
-<tr>
-<th>Name</th><th>Wax</th><th>Frag</th><th>Wick</th>
-<th>Cost</th><th>Price</th>
-</tr>
-<tr>
-<td><input value="Vanilla Bliss"></td>
-<td><input class="wax" value="50" oninput="calc()"></td>
-<td><input class="frag" value="5" oninput="calc()"></td>
-<td><input class="wick" value="1" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>
-</tr>
-</table>
-<button onclick="addRecipe()">+ Add recipe</button>
-</div>
+            <div class="card">
+                <h2>Alerte Stoc</h2>
+                <div id="stockAlerts"></div>
+            </div>
 
-<!-- CALENDAR -->
-<div class="card">
-<h2>📅 Production Calendar</h2>
-<table id="calendar">
-<tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
-<tr>
-<td><input value="Vanilla Bliss" class="recipeName"></td>
-<td><input class="qty" value="10" oninput="recalcInventory()"></td>
-<td><input type="date" class="pour" onchange="updateCalendar()"></td>
-<td class="readyDate">–</td>
-<td class="status">–</td>
-</tr>
-</table>
-</div>
+            <div class="card">
+                <h2>Evenimente Următoare</h2>
+                <div id="upcomingEvents"></div>
+            </div>
+        </div>
 
-<!-- AI HELPER -->
-<div class="card">
-<h2>🤖 AI Helper</h2>
-<div id="aiChat"></div>
-<input class="aiInput" id="aiInput" placeholder="Ask AI..." />
-<button onclick="askAI()">Ask AI</button>
-</div>
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content">
+            <div class="card">
+                <h2>Adaugă Material în Stoc</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Nume Material</label>
+                        <input type="text" id="materialName" placeholder="ex: Ceară de soia">
+                    </div>
+                    <div class="input-group">
+                        <label>Cantitate</label>
+                        <input type="number" id="materialQuantity" placeholder="ex: 5000">
+                    </div>
+                    <div class="input-group">
+                        <label>Unitate Măsură</label>
+                        <select id="materialUnit">
+                            <option value="g">Grame (g)</option>
+                            <option value="kg">Kilograme (kg)</option>
+                            <option value="ml">Mililitri (ml)</option>
+                            <option value="l">Litri (l)</option>
+                            <option value="buc">Bucăți (buc)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Prag Alertă (Stoc Minim)</label>
+                        <input type="number" id="materialMinStock" placeholder="ex: 1000">
+                    </div>
+                </div>
+                <button class="btn" onclick="addMaterial()">Adaugă Material</button>
+            </div>
 
-<footer>© 2026 NOOR CandleCraft</footer>
+            <div class="card">
+                <h2>Inventar Materiale</h2>
+                <div id="materialsList" class="item-list"></div>
+            </div>
+        </div>
 
-</div>
+        <!-- Recipes Tab -->
+        <div id="recipes" class="tab-content">
+            <div class="card">
+                <h2>Rețete Pre-instalate</h2>
+                <div id="recipesList"></div>
+            </div>
+        </div>
 
-<script>
-// COSTS
-const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
-let initStock={wax:0,frag:0,wick:0,jar:0};
+        <!-- Calendar Tab -->
+        <div id="calendar" class="tab-content">
+            <div class="card">
+                <h2>Adaugă Eveniment</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Tip Eveniment</label>
+                        <select id="eventType">
+                            <option value="production">Producție</option>
+                            <option value="sale">Vânzare</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Titlu Eveniment</label>
+                        <input type="text" id="eventTitle" placeholder="ex: Producție lumânări lavandă">
+                    </div>
+                    <div class="input-group">
+                        <label>Data</label>
+                        <input type="date" id="eventDate">
+                    </div>
+                    <div class="input-group">
+                        <label>Ora</label>
+                        <input type="time" id="eventTime">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Descriere</label>
+                    <textarea id="eventDescription" rows="3" placeholder="Detalii despre eveniment..."></textarea>
+                </div>
+                <button class="btn" onclick="addEvent()">Adaugă Eveniment</button>
+                <button class="btn btn-secondary" onclick="exportToGoogleCalendar()" style="margin-left: 1rem;">Export Google Calendar (.ics)</button>
+            </div>
 
-// SAVE / LOAD
-function saveData(){
-  const data={
-    inventory:{
-      wax:+document.getElementById('invWax').value||0,
-      frag:+document.getElementById('invFrag').value||0,
-      wick:+document.getElementById('invWick').value||0,
-      jar:+document.getElementById('invJar').value||0
-    },
-    recipes:[],
-    calendar:[]
-  };
-  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
-    if(i===0) return;
-    data.recipes.push({
-      name:r.querySelector("td:nth-child(1) input").value,
-      wax:+r.querySelector(".wax").value||0,
-      frag:+r.querySelector(".frag").value||0,
-      wick:+r.querySelector(".wick").value||0
-    });
-  });
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    data.calendar.push({
-      name:r.querySelector(".recipeName").value,
-      qty:+r.querySelector(".qty").value||0,
-      pour:r.querySelector(".pour").value
-    });
-  });
-  localStorage.setItem("noorData",JSON.stringify(data));
-}
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h2 style="font-family: 'Cormorant Garamond', serif; color: var(--primary);">Evenimente Programate</h2>
+                </div>
+                <div id="eventsList"></div>
+            </div>
+        </div>
 
-function loadData(){
-  const d=localStorage.getItem("noorData");
-  if(!d) return;
-  const data=JSON.parse(d);
-  // inventory
-  document.getElementById('invWax').value=data.inventory.wax;
-  document.getElementById('invFrag').value=data.inventory.frag;
-  document.getElementById('invWick').value=data.inventory.wick;
-  document.getElementById('invJar').value=data.inventory.jar;
-  initStock={...data.inventory};
-  // recipes
-  const recipeTable=document.getElementById("recipes");
-  while(recipeTable.rows.length>1) recipeTable.deleteRow(1);
-  data.recipes.forEach(r=>{
-    const row=recipeTable.insertRow();
-    row.innerHTML=`<td><input value="${r.name}"></td>
-<td><input class="wax" value="${r.wax}" oninput="calc()"></td>
-<td><input class="frag" value="${r.frag}" oninput="calc()"></td>
-<td><input class="wick" value="${r.wick}" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>`;
-  });
-  // calendar
-  const calTable=document.getElementById("calendar");
-  while(calTable.rows.length>1) calTable.deleteRow(1);
-  data.calendar.forEach(c=>{
-    const row=calTable.insertRow();
-    row.innerHTML=`<td><input class="recipeName" value="${c.name}"></td>
-<td><input class="qty" value="${c.qty}" oninput="recalcInventory()"></td>
-<td><input type="date" class="pour" value="${c.pour}" onchange="updateCalendar()"></td>
-<td class="readyDate">–</td>
-<td class="status">–</td>`;
-  });
-}
-loadData();
+        <!-- Calculator Tab -->
+        <div id="calculator" class="tab-content">
+            <div class="card">
+                <h2>Calculator Preț Lumânare</h2>
+                <div class="price-calculator">
+                    <div class="grid">
+                        <div class="input-group">
+                            <label>Cost Ceară (RON/kg)</label>
+                            <input type="number" id="calcWaxCost" step="0.01" placeholder="ex: 35.50">
+                        </div>
+                        <div class="input-group">
+                            <label>Cantitate Ceară (g)</label>
+                            <input type="number" id="calcWaxAmount" placeholder="ex: 200">
+                        </div>
+                        <div class="input-group">
+                            <label>Cost Fitil (RON/buc)</label>
+                            <input type="number" id="calcWickCost" step="0.01" placeholder="ex: 0.50">
+                        </div>
+                        <div class="input-group">
+                            <label>Cost Parfum (RON/ml)</label>
+                            <input type="number" id="calcFragranceCost" step="0.01" placeholder="ex: 0.80">
+                        </div>
+                        <div class="input-group">
+                            <label>Cantitate Parfum (ml)</label>
+                            <input type="number" id="calcFragranceAmount" placeholder="ex: 10">
+                        </div>
+                        <div class="input-group">
+                            <label>Cost Recipient (RON)</label>
+                            <input type="number" id="calcContainerCost" step="0.01" placeholder="ex: 5.00">
+                        </div>
+                        <div class="input-group">
+                            <label>Alte Costuri (RON)</label>
+                            <input type="number" id="calcOtherCosts" step="0.01" placeholder="ex: 2.00">
+                        </div>
+                        <div class="input-group">
+                            <label>Marjă Profit (%)</label>
+                            <input type="number" id="calcProfitMargin" placeholder="ex: 60" value="60">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="calculatePrice()" style="width: 100%; margin-top: 1rem;">Calculează Preț</button>
+                    
+                    <div id="calcResult" style="display: none;" class="calc-result">
+                        <p>Cost Producție:</p>
+                        <div class="price" id="costPrice">0.00 RON</div>
+                        <p>Preț Vânzare Recomandat:</p>
+                        <div class="price" id="salePrice">0.00 RON</div>
+                        <p>Profit per Bucată: <span id="profitAmount">0.00 RON</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-// CALC COST
-function calc(){
-  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
-    if(i===0) return;
-    const wax=+r.querySelector(".wax").value||0;
-    const frag=+r.querySelector(".frag").value||0;
-    const wick=+r.querySelector(".wick").value||0;
-    const cost=wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
-    r.querySelector(".cost").innerText=cost.toFixed(2);
-    r.querySelector(".price").innerText=(cost*2.5).toFixed(2);
-  });
-  saveData();
-}
+    <script>
+        // Storage
+        let inventory = JSON.parse(localStorage.getItem('candleInventory')) || [];
+        let events = JSON.parse(localStorage.getItem('candleEvents')) || [];
 
-// ADD RECIPE
-function addRecipe(){
-  const t=document.getElementById("recipes");
-  const row=t.insertRow();
-  row.innerHTML=`<td><input></td>
-<td><input class="wax" oninput="calc()"></td>
-<td><input class="frag" oninput="calc()"></td>
-<td><input class="wick" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>`;
-  saveData();
-}
+        // Pre-installed recipes
+        const recipes = [
+            {
+                name: "Lumânare Lavandă Relaxantă",
+                ingredients: [
+                    "200g ceară de soia",
+                    "10ml ulei esențial de lavandă",
+                    "1 fitil de bumbac",
+                    "Recipient sticlă 200ml",
+                    "Colorant mov (opțional)"
+                ],
+                instructions: "Topește ceara la 70°C, adaugă uleiul esențial, toarnă în recipient și lasă să se răcească."
+            },
+            {
+                name: "Lumânare Vanilie & Scorțișoară",
+                ingredients: [
+                    "250g ceară de parafină",
+                    "8ml esență vanilie",
+                    "3ml esență scorțișoară",
+                    "1 fitil",
+                    "Recipient ceramică"
+                ],
+                instructions: "Topește ceara, amestecă esențele, toarnă și decorează cu scorțișoară."
+            },
+            {
+                name: "Lumânare Citrice Energizantă",
+                ingredients: [
+                    "200g ceară de soia",
+                    "5ml ulei portocală",
+                    "5ml ulei lămâie",
+                    "1 fitil",
+                    "Colorant galben"
+                ],
+                instructions: "Combină ceara topită cu uleiurile citrice, adaugă colorant și toarnă."
+            },
+            {
+                name: "Lumânare Trandafir Romantic",
+                ingredients: [
+                    "220g ceară vegetală",
+                    "12ml parfum trandafir",
+                    "Petale trandafir uscate",
+                    "1 fitil",
+                    "Recipient cristal"
+                ],
+                instructions: "Topește ceara, adaugă parfumul, decorează cu petale și lasă să se solidifice."
+            },
+            {
+                name: "Lumânare Eucalipt & Mentă",
+                ingredients: [
+                    "200g ceară de soia",
+                    "7ml ulei eucalipt",
+                    "3ml ulei mentă",
+                    "1 fitil",
+                    "Colorant verde"
+                ],
+                instructions: "Amestecă ceara topită cu uleiurile, adaugă colorant, toarnă în recipient."
+            },
+            {
+                name: "Lumânare Café Mocha",
+                ingredients: [
+                    "250g ceară de soia",
+                    "10ml esență cafea",
+                    "2ml esență ciocolată",
+                    "Boabe cafea pentru decor",
+                    "1 fitil"
+                ],
+                instructions: "Topește ceara, adaugă esențele, decorează cu boabe de cafea."
+            },
+            {
+                name: "Lumânare Ocean Breeze",
+                ingredients: [
+                    "200g ceară de parafină",
+                    "8ml parfum marin",
+                    "Colorant albastru",
+                    "Scoici decorative",
+                    "1 fitil"
+                ],
+                instructions: "Combină ingredientele, creează straturi albastre, decorează cu scoici."
+            },
+            {
+                name: "Lumânare Lemn de Santal",
+                ingredients: [
+                    "230g ceară vegetală",
+                    "10ml ulei lemn de santal",
+                    "3ml ulei cedru",
+                    "1 fitil",
+                    "Recipient lemn"
+                ],
+                instructions: "Topește ceara, adaugă uleiurile lemnoase, toarnă în recipient natural."
+            },
+            {
+                name: "Lumânare Fructe de Pădure",
+                ingredients: [
+                    "200g ceară de soia",
+                    "6ml esență căpșuni",
+                    "4ml esență zmeură",
+                    "Colorant roșu",
+                    "1 fitil"
+                ],
+                instructions: "Amestecă ceara topită cu esențele de fructe, adaugă colorant."
+            },
+            {
+                name: "Lumânare Iasomie Nocturnă",
+                ingredients: [
+                    "220g ceară vegetală",
+                    "12ml parfum iasomie",
+                    "Flori iasomie uscate",
+                    "1 fitil",
+                    "Recipient sticlă elegantă"
+                ],
+                instructions: "Topește ceara, adaugă parfumul floral, decorează cu flori și toarnă."
+            }
+        ];
 
-// CALENDAR
-function updateCalendar(){
-  const today=new Date();
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    const pour=r.querySelector(".pour").value;
-    if(!pour) return;
-    const d=new Date(pour);
-    const ready=new Date(d);
-    ready.setDate(d.getDate()+7);
-    r.querySelector(".readyDate").innerText=d.toISOString().split('T')[0];
-    r.querySelector(".status").innerHTML=today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
-  });
-  recalcInventory();
-  saveData();
-}
+        // Initialize
+        function init() {
+            renderMaterials();
+            renderRecipes();
+            renderEvents();
+            updateDashboard();
+        }
 
-// INVENTORY
-function recalcInventory(){
-  let waxStock=initStock.wax;
-  let fragStock=initStock.frag;
-  let wickStock=initStock.wick;
-  let jarStock=initStock.jar;
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
 
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    const qty=+r.querySelector(".qty").value||0;
-    const recipeName=r.querySelector(".recipeName").value;
-    const recipeRow=Array.from(document.querySelectorAll("#recipes tr")).find((tr,j)=>j>0 && tr.querySelector("td input").value===recipeName);
-    if(!recipeRow) return;
-    const wax=+recipeRow.querySelector(".wax").value||0;
-    const frag=+recipeRow.querySelector(".frag").value||0;
-    const wick=+recipeRow.querySelector(".wick").value||0;
+        // Add material
+        function addMaterial() {
+            const name = document.getElementById('materialName').value;
+            const quantity = parseFloat(document.getElementById('materialQuantity').value);
+            const unit = document.getElementById('materialUnit').value;
+            const minStock = parseFloat(document.getElementById('materialMinStock').value);
 
-    waxStock=Math.max(0,waxStock - wax*qty);
-    fragStock=Math.max(0,fragStock - frag*qty);
-    wickStock=Math.max(0,wickStock - wick*qty);
-    jarStock=Math.max(0,jarStock - qty);
-  });
+            if (!name || !quantity || !minStock) {
+                alert('Te rog completează toate câmpurile!');
+                return;
+            }
 
-  document.getElementById('invWax').value=waxStock;
-  document.getElementById('invFrag').value=fragStock;
-  document.getElementById('invWick').value=wickStock;
-  document.getElementById('invJar').value=jarStock;
+            inventory.push({
+                id: Date.now(),
+                name,
+                quantity,
+                unit,
+                minStock
+            });
 
-  saveData();
-}
+            localStorage.setItem('candleInventory', JSON.stringify(inventory));
+            
+            document.getElementById('materialName').value = '';
+            document.getElementById('materialQuantity').value = '';
+            document.getElementById('materialMinStock').value = '';
+            
+            renderMaterials();
+            updateDashboard();
+        }
 
-// AI HELPER (MOCK)
-function askAI(){
-  const input=document.getElementById('aiInput').value.trim();
-  if(!input) return;
-  const chat=document.getElementById('aiChat');
-  const userMsg=`<div><b>You:</b> ${input}</div>`;
-  chat.innerHTML+=userMsg;
+        // Render materials
+        function renderMaterials() {
+            const list = document.getElementById('materialsList');
+            list.innerHTML = '';
 
-  // MOCK RESPONSE
-  let response="🤖 Sorry, I need more data!";
-  if(/price/i.test(input)){
-    response="💰 Suggested price = Cost * 2.5 (default)";
-  } else if(/wax/i.test(input)){
-    response="🧴 You can increase wax by 10% for stronger scent.";
-  } else if(/inventory|stock/i.test(input)){
-    response="📦 Check inventory above; recalc if needed.";
-  } else if(/recipe/i.test(input)){
-    response="📝 Try adjusting fragrance for better aroma balance.";
-  }
-  chat.innerHTML+=`<div><b>AI:</b> ${response}</div>`;
-  chat.scrollTop=chat.scrollHeight;
-  document.getElementById('aiInput').value="";
-}
+            inventory.forEach(item => {
+                const stockClass = item.quantity <= 0 ? 'out-of-stock' : 
+                                 item.quantity <= item.minStock ? 'low-stock' : '';
+                
+                const div = document.createElement('div');
+                div.className = `item ${stockClass}`;
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <p>Cantitate: ${item.quantity} ${item.unit} | Stoc minim: ${item.minStock} ${item.unit}</p>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-secondary btn-small" onclick="updateStock(${item.id}, 'add')">+ Adaugă</button>
+                        <button class="btn btn-secondary btn-small" onclick="updateStock(${item.id}, 'remove')">- Scade</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteMaterial(${item.id})">Șterge</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
 
-// INITIAL
-calc();
-updateCalendar();
-recalcInventory();
-</script>
+        // Update stock
+        function updateStock(id, action) {
+            const amount = prompt('Introducă cantitatea:');
+            if (!amount || isNaN(amount)) return;
 
+            const item = inventory.find(i => i.id === id);
+            if (action === 'add') {
+                item.quantity += parseFloat(amount);
+            } else {
+                item.quantity -= parseFloat(amount);
+            }
+
+            localStorage.setItem('candleInventory', JSON.stringify(inventory));
+            renderMaterials();
+            updateDashboard();
+        }
+
+        // Delete material
+        function deleteMaterial(id) {
+            if (!confirm('Sigur vrei să ștergi acest material?')) return;
+            inventory = inventory.filter(i => i.id !== id);
+            localStorage.setItem('candleInventory', JSON.stringify(inventory));
+            renderMaterials();
+            updateDashboard();
+        }
+
+        // Render recipes
+        function renderRecipes() {
+            const list = document.getElementById('recipesList');
+            list.innerHTML = '';
+
+            recipes.forEach(recipe => {
+                const div = document.createElement('div');
+                div.className = 'recipe-card';
+                div.innerHTML = `
+                    <h3>${recipe.name}</h3>
+                    <div class="ingredients">
+                        <h4>Ingrediente:</h4>
+                        <ul>
+                            ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <p><strong>Instrucțiuni:</strong> ${recipe.instructions}</p>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Add event
+        function addEvent() {
+            const type = document.getElementById('eventType').value;
+            const title = document.getElementById('eventTitle').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const description = document.getElementById('eventDescription').value;
+
+            if (!title || !date) {
+                alert('Te rog completează titlul și data!');
+                return;
+            }
+
+            events.push({
+                id: Date.now(),
+                type,
+                title,
+                date,
+                time,
+                description
+            });
+
+            localStorage.setItem('candleEvents', JSON.stringify(events));
+            
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventDate').value = '';
+            document.getElementById('eventTime').value = '';
+            document.getElementById('eventDescription').value = '';
+            
+            renderEvents();
+            updateDashboard();
+        }
+
+        // Render events
+        function renderEvents() {
+            const list = document.getElementById('eventsList');
+            list.innerHTML = '';
+
+            const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedEvents.forEach(event => {
+                const div = document.createElement('div');
+                div.className = `event-item ${event.type}`;
+                div.innerHTML = `
+                    <h3 style="font-family: 'Cormorant Garamond', serif; color: var(--primary); margin-bottom: 0.5rem;">
+                        ${event.type === 'production' ? '🏭' : '💰'} ${event.title}
+                    </h3>
+                    <p><strong>Data:</strong> ${new Date(event.date).toLocaleDateString('ro-RO')} ${event.time ? `la ${event.time}` : ''}</p>
+                    ${event.description ? `<p>${event.description}</p>` : ''}
+                    <button class="btn btn-danger btn-small" onclick="deleteEvent(${event.id})" style="margin-top: 0.5rem;">Șterge</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Delete event
+        function deleteEvent(id) {
+            if (!confirm('Sigur vrei să ștergi acest eveniment?')) return;
+            events = events.filter(e => e.id !== id);
+            localStorage.setItem('candleEvents', JSON.stringify(events));
+            renderEvents();
+            updateDashboard();
+        }
+
+        // Export to Google Calendar
+        function exportToGoogleCalendar() {
+            if (events.length === 0) {
+                alert('Nu există evenimente de exportat!');
+                return;
+            }
+
+            let icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Atelier Lumanari//RO
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Atelier Lumanari
+X-WR-TIMEZONE:Europe/Bucharest
+X-WR-CALDESC:Calendar productie si vanzari lumanari
+`;
+
+            events.forEach(event => {
+                const dateTime = event.time ? 
+                    `${event.date}T${event.time.replace(':', '')}00` : 
+                    event.date.replace(/-/g, '');
+                
+                icsContent += `
+BEGIN:VEVENT
+UID:${event.id}@atelierlumanari.ro
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${dateTime}
+SUMMARY:${event.type === 'production' ? '[PRODUCTIE] ' : '[VANZARE] '}${event.title}
+DESCRIPTION:${event.description || ''}
+STATUS:CONFIRMED
+END:VEVENT`;
+            });
+
+            icsContent += `
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'atelier-lumanari-calendar.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Calculate price
+        function calculatePrice() {
+            const waxCost = parseFloat(document.getElementById('calcWaxCost').value) || 0;
+            const waxAmount = parseFloat(document.getElementById('calcWaxAmount').value) || 0;
+            const wickCost = parseFloat(document.getElementById('calcWickCost').value) || 0;
+            const fragranceCost = parseFloat(document.getElementById('calcFragranceCost').value) || 0;
+            const fragranceAmount = parseFloat(document.getElementById('calcFragranceAmount').value) || 0;
+            const containerCost = parseFloat(document.getElementById('calcContainerCost').value) || 0;
+            const otherCosts = parseFloat(document.getElementById('calcOtherCosts').value) || 0;
+            const profitMargin = parseFloat(document.getElementById('calcProfitMargin').value) || 0;
+
+            const waxTotal = (waxCost / 1000) * waxAmount;
+            const fragranceTotal = fragranceCost * fragranceAmount;
+            const totalCost = waxTotal + wickCost + fragranceTotal + containerCost + otherCosts;
+            const salePrice = totalCost * (1 + profitMargin / 100);
+            const profit = salePrice - totalCost;
+
+            document.getElementById('costPrice').textContent = totalCost.toFixed(2) + ' RON';
+            document.getElementById('salePrice').textContent = salePrice.toFixed(2) + ' RON';
+            document.getElementById('profitAmount').textContent = profit.toFixed(2) + ' RON';
+            document.getElementById('calcResult').style.display = 'block';
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            document.getElementById('totalItems').textContent = inventory.length;
+            
+            const lowStock = inventory.filter(i => i.quantity <= i.minStock && i.quantity > 0);
+            const outOfStock = inventory.filter(i => i.quantity <= 0);
+            document.getElementById('lowStockCount').textContent = lowStock.length + outOfStock.length;
+
+            const alertsDiv = document.getElementById('stockAlerts');
+            alertsDiv.innerHTML = '';
+
+            if (outOfStock.length === 0 && lowStock.length === 0) {
+                alertsDiv.innerHTML = '<p style="color: var(--success); font-weight: 500;">✓ Toate materialele sunt la nivel optim!</p>';
+            } else {
+                outOfStock.forEach(item => {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-danger';
+                    alert.innerHTML = `<strong>⚠️ STOC EPUIZAT:</strong> ${item.name} - Este necesară reaprovizionare urgentă!`;
+                    alertsDiv.appendChild(alert);
+                });
+
+                lowStock.forEach(item => {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-warning';
+                    alert.innerHTML = `<strong>⚡ STOC SCĂZUT:</strong> ${item.name} - Disponibil: ${item.quantity} ${item.unit} (Minim: ${item.minStock} ${item.unit})`;
+                    alertsDiv.appendChild(alert);
+                });
+            }
+
+            document.getElementById('eventsCount').textContent = events.length;
+
+            const upcomingDiv = document.getElementById('upcomingEvents');
+            upcomingDiv.innerHTML = '';
+            
+            const upcoming = events
+                .filter(e => new Date(e.date) >= new Date())
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(0, 3);
+
+            if (upcoming.length === 0) {
+                upcomingDiv.innerHTML = '<p style="color: #666;">Nu există evenimente programate în viitor.</p>';
+            } else {
+                upcoming.forEach(event => {
+                    const div = document.createElement('div');
+                    div.className = `event-item ${event.type}`;
+                    div.innerHTML = `
+                        <h3 style="font-family: 'Cormorant Garamond', serif; color: var(--primary);">
+                            ${event.type === 'production' ? '🏭' : '💰'} ${event.title}
+                        </h3>
+                        <p><strong>Data:</strong> ${new Date(event.date).toLocaleDateString('ro-RO')}</p>
+                    `;
+                    upcomingDiv.appendChild(div);
+                });
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
 </body>
 </html>
 
