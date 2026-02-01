@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>NOOR – CandleCraft</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-   <style>
+<meta charset="UTF-8">
+<title>NOOR – CandleCraft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
 :root{
   --bg:#f7f4ef;
   --card:#ffffff;
@@ -105,82 +105,129 @@ button:hover{
 
 .ready{background:#d4edda;color:#155724}
 .cure{background:#fff3cd;color:#856404}
-</style>
 
-  </style>
+footer{
+  text-align:center;
+  opacity:.6;
+  margin-top:60px;
+  font-size:14px;
+}
+</style>
 </head>
-</div>
+
 <body>
 <div class="container">
 
-<h1><header>
+<header>
   <h1>NOOR – CandleCraft</h1>
   <p>Smart candle recipes, cost control & production planning</p>
 </header>
 
-
 <div class="card">
-
 <h2>🧪 Recipes</h2>
+
 <table id="recipes">
 <tr>
-<th>Recipe</th><th>Wax (g)</th><th>Fragrance (g)</th><th>Wick</th>
-<th>Cost / Candle</th><th>Suggested Price</th>
+  <th>Recipe</th>
+  <th>Wax (g)</th>
+  <th>Fragrance (g)</th>
+  <th>Wick</th>
+  <th>Cost / Candle</th>
+  <th>Suggested Price</th>
 </tr>
+
 <tr>
-<td>Vanilla Bliss</td>
-<td><input value="50" class="wax"></td>
-<td><input value="5" class="frag"></td>
-<td><input value="1" class="wick"></td>
-<td class="cost">–</td>
-<td class="price">–</td>
+  <td>Vanilla Bliss</td>
+  <td><input class="wax" value="50"></td>
+  <td><input class="frag" value="5"></td>
+  <td><input class="wick" value="1"></td>
+  <td class="cost">–</td>
+  <td class="price">–</td>
 </tr>
 </table>
+
 <button onclick="calc()">Calculate</button>
 </div>
 
-<div class="section">
+<div class="card">
 <h2>📅 Production Calendar</h2>
+
 <table id="calendar">
-<tr><th>Batch</th><th>Recipe</th><th>Qty</th><th>Pour Date</th><th>Ready</th><th>Status</th></tr>
 <tr>
-<td>1</td><td>Vanilla Bliss</td><td>10</td>
-<td><input type="date" class="pour"></td>
-<td class="ready">–</td>
-<td class="status">–</td>
+  <th>Batch</th>
+  <th>Recipe</th>
+  <th>Qty</th>
+  <th>Pour Date</th>
+  <th>Ready</th>
+  <th>Status</th>
+</tr>
+
+<tr>
+  <td>1</td>
+  <td>Vanilla Bliss</td>
+  <td>10</td>
+  <td><input type="date" class="pour"></td>
+  <td class="ready-date">–</td>
+  <td class="status">–</td>
 </tr>
 </table>
+
 <button onclick="calendar()">Update</button>
 </div>
 
+<footer>
+  © 2026 NOOR CandleCraft · Built for makers
+</footer>
+
+</div>
+
 <script>
-const COSTS = {wax:0.05, frag:0.10, wick:0.50, jar:0.80};
+const COSTS = {
+  wax: 0.05,
+  frag: 0.10,
+  wick: 0.50,
+  jar: 0.80
+};
 
 function calc(){
- document.querySelectorAll('#recipes tr').forEach((r,i)=>{
-  if(i===0) return;
-  let w=+r.querySelector('.wax').value||0;
-  let f=+r.querySelector('.frag').value||0;
-  let k=+r.querySelector('.wick').value||0;
-  let cost=w*COSTS.wax+f*COSTS.frag+k*COSTS.wick+COSTS.jar;
-  r.querySelector('.cost').innerText=cost.toFixed(2);
-  r.querySelector('.price').innerText=(cost*2.5).toFixed(2);
- });
+  document.querySelectorAll("#recipes tr").forEach((row, i)=>{
+    if(i===0) return;
+
+    const wax = +row.querySelector(".wax").value || 0;
+    const frag = +row.querySelector(".frag").value || 0;
+    const wick = +row.querySelector(".wick").value || 0;
+
+    const cost = wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
+    row.querySelector(".cost").innerText = cost.toFixed(2);
+    row.querySelector(".price").innerText = (cost*2.5).toFixed(2);
+  });
 }
 
 function calendar(){
- let today=new Date();
- document.querySelectorAll('#calendar tr').forEach((r,i)=>{
-  if(i===0) return;
-  let p=r.querySelector('.pour').value;
-  if(!p) return;
-  let d=new Date(p);
-  let ready=new Date(d); ready.setDate(d.getDate()+7);
-  r.querySelector('.ready').innerText=ready.toISOString().split('T')[0];
-  r.querySelector('.status').innerText=today>=ready?'Ready':'In Cure';
- });
+  const today = new Date();
+
+  document.querySelectorAll("#calendar tr").forEach((row, i)=>{
+    if(i===0) return;
+
+    const pourInput = row.querySelector(".pour");
+    if(!pourInput.value) return;
+
+    const pourDate = new Date(pourInput.value);
+    const ready = new Date(pourDate);
+    ready.setDate(pourDate.getDate()+7);
+
+    row.querySelector(".ready-date").innerText =
+      ready.toISOString().split("T")[0];
+
+    row.querySelector(".status").innerHTML =
+      today >= ready
+      ? '<span class="badge ready">Ready</span>'
+      : '<span class="badge cure">In Cure</span>';
+  });
 }
 </script>
 
 </body>
 </html>
+
+
