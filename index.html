@@ -1,285 +1,1393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>NOOR – CandleCraft</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candle Maker App - Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-:root{
-  --bg:#f7f4ef;
-  --card:#ffffff;
-  --accent:#6b4f3f;
-  --soft:#e6d8cf;
-  --text:#2e2e2e;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
-.container{max-width:1100px;margin:auto;padding:30px}
-header h1{margin:0;color:var(--accent)}
-header p{opacity:.7}
-.card{background:var(--card);border-radius:14px;padding:20px;margin-bottom:30px;box-shadow:0 8px 24px rgba(0,0,0,.06);}
-h2{margin-top:0;color:var(--accent)}
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-th{background:var(--soft)}
-input{width:80px;padding:6px;border-radius:6px;border:1px solid #ccc}
-button{background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:5px}
-.badge{padding:4px 10px;border-radius:999px;font-size:12px}
-.ready{background:#d4edda;color:#155724}
-.cure{background:#fff3cd;color:#856404}
-#aiChat{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:10px;border-radius:8px;margin-top:10px;background:#fafafa;}
-.aiInput{width:80%;padding:6px;border-radius:6px;border:1px solid #ccc;margin-top:5px;}
-footer{text-align:center;opacity:.6;margin-top:60px}
-</style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #fafbfc;
+            border-radius: 45px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #fafbfc 0%, #f0f2f5 100%);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+            font-weight: 400;
+            position: relative;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .nav-bar {
+            display: flex;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            padding: 8px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.03);
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            font-size: 11px;
+            font-weight: 600;
+            color: #8e8e93;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover .icon {
+            transform: scale(1.1);
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            font-size: 19px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .card p {
+            color: #6e6e73;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button-secondary {
+            background: #f0f2f5;
+            color: #1a1a1a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .button-secondary:hover {
+            background: #e8eaed;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e8eaed;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .recipe-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .recipe-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .recipe-item h4 {
+            font-size: 17px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.2px;
+        }
+
+        .recipe-item p {
+            font-size: 13px;
+            color: #8e8e93;
+            font-weight: 500;
+        }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .stock-item:last-child {
+            border-bottom: none;
+        }
+
+        .stock-name {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .stock-amount {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 700;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .low-stock {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 60px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.ai {
+            align-items: flex-start;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .message.ai .message-bubble {
+            background: white;
+            color: #1a1a1a;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.03);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e8eaed;
+            border-radius: 24px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            font-weight: 500;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 64px;
+            left: 24px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .calculation-result {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .calculation-result h4 {
+            color: #2e7d32;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 17px;
+        }
+
+        .calculation-result p {
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-success {
+            background: rgba(76, 175, 80, 0.15);
+            color: #2e7d32;
+        }
+
+        .badge-warning {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+
+        .badge-info {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+
+        /* Custom scrollbar */
+        .content::-webkit-scrollbar,
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track,
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content::-webkit-scrollbar-thumb,
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover,
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
+        }
+
+        /* Premium icon containers */
+        .icon-container {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <div class="phone-frame">
+        <!-- Home Screen -->
+        <div class="screen active" id="home">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <div class="header">
+                <h1>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M12 2L15.5 8.5L22 9.5L17 14.5L18 21L12 18L6 21L7 14.5L2 9.5L8.5 8.5L12 2Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="2" fill="rgba(255,255,255,0.3)"/>
+                    </svg>
+                    CandleCraft
+                </h1>
+                <p>Your candle-making companion</p>
+            </div>
+            <div class="content">
+                <div class="card" style="cursor: pointer; background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);" onclick="showScreen('recipes')">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="icon-container">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 7H16M8 11H16M8 15H12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Rețete</h3>
+                            <p>Gestionează formulele tale de lumânări</p>
+                            <div style="margin-top: 8px;">
+                                <span class="badge badge-info">12 rețete salvate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<header>
-  <h1>NOOR – CandleCraft</h1>
-  <p>Recipes · Inventory · Cost · Production · AI Helper</p>
-</header>
+                <div class="card" style="cursor: pointer; background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(156, 204, 101, 0.05) 100%);" onclick="showScreen('calculator')">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="icon-container" style="background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%); box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="2" width="16" height="20" rx="2" stroke="white" stroke-width="2"/>
+                                <path d="M8 6H16M8 10H16M8 14H12M14 14H16M8 18H10M12 18H16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="10" cy="6" r="0.5" fill="white"/>
+                                <circle cx="14" cy="6" r="0.5" fill="white"/>
+                                <circle cx="10" cy="10" r="0.5" fill="white"/>
+                                <circle cx="14" cy="10" r="0.5" fill="white"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Calculator</h3>
+                            <p>Calculează materialele necesare pentru producție</p>
+                            <div style="margin-top: 8px;">
+                                <span class="badge badge-success">Calcule în timp real</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- INVENTORY -->
-<div class="card">
-<h2>📦 Inventory</h2>
-<table>
-<tr><th>Item</th><th>Stock</th></tr>
-<tr><td>Wax (g)</td><td><input id="invWax"></td></tr>
-<tr><td>Fragrance (g)</td><td><input id="invFrag"></td></tr>
-<tr><td>Wicks</td><td><input id="invWick"></td></tr>
-<tr><td>Jars</td><td><input id="invJar"></td></tr>
-</table>
-<button onclick="recalcInventory()">🔄 Recalc Inventory</button>
-</div>
+                <div class="card" style="cursor: pointer; background: linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 193, 7, 0.05) 100%);" onclick="showScreen('stock')">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="icon-container" style="background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%); box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Stoc</h3>
+                            <p>Monitorizează inventarul de materiale</p>
+                            <div style="margin-top: 8px; display: flex; gap: 8px;">
+                                <span class="badge badge-success">15 articole</span>
+                                <span class="badge badge-warning">3 stoc redus</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- RECIPES -->
-<div class="card">
-<h2>🧪 Recipes</h2>
-<table id="recipes">
-<tr>
-<th>Name</th><th>Wax</th><th>Frag</th><th>Wick</th>
-<th>Cost</th><th>Price</th>
-</tr>
-<tr>
-<td><input value="Vanilla Bliss"></td>
-<td><input class="wax" value="50" oninput="calc()"></td>
-<td><input class="frag" value="5" oninput="calc()"></td>
-<td><input class="wick" value="1" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>
-</tr>
-</table>
-<button onclick="addRecipe()">+ Add recipe</button>
-</div>
+                <div class="card" style="cursor: pointer; background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(3, 169, 244, 0.05) 100%);" onclick="showScreen('calendar')">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="icon-container" style="background: linear-gradient(135deg, #2196f3 0%, #03a9f4 100%); box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
+                                <path d="M16 2V6M8 2V6M3 10H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="8" cy="14" r="1" fill="white"/>
+                                <circle cx="12" cy="14" r="1" fill="white"/>
+                                <circle cx="16" cy="14" r="1" fill="white"/>
+                                <circle cx="8" cy="18" r="1" fill="white"/>
+                                <circle cx="12" cy="18" r="1" fill="white"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Calendar</h3>
+                            <p>Planifică și urmărește producția</p>
+                            <div style="margin-top: 8px;">
+                                <span class="badge badge-info">3 taskuri săptămâna aceasta</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- CALENDAR -->
-<div class="card">
-<h2>📅 Production Calendar</h2>
-<table id="calendar">
-<tr><th>Recipe</th><th>Qty</th><th>Pour</th><th>Ready</th><th>Status</th></tr>
-<tr>
-<td><input value="Vanilla Bliss" class="recipeName"></td>
-<td><input class="qty" value="10" oninput="recalcInventory()"></td>
-<td><input type="date" class="pour" onchange="updateCalendar()"></td>
-<td class="readyDate">–</td>
-<td class="status">–</td>
-</tr>
-</table>
-</div>
+                <div class="card" style="cursor: pointer; background: linear-gradient(135deg, rgba(233, 30, 99, 0.05) 0%, rgba(236, 64, 122, 0.05) 100%);" onclick="showScreen('labels')">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="icon-container" style="background: linear-gradient(135deg, #e91e63 0%, #ec407a 100%); box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.59 13.41L13.42 20.58C13.2343 20.766 13.0137 20.9135 12.7709 21.0141C12.5281 21.1148 12.2678 21.1666 12.005 21.1666C11.7422 21.1666 11.4819 21.1148 11.2391 21.0141C10.9963 20.9135 10.7757 20.766 10.59 20.58L2 12V2H12L20.59 10.59C20.9625 10.9647 21.1716 11.4716 21.1716 12C21.1716 12.5284 20.9625 13.0353 20.59 13.41Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="7" cy="7" r="1.5" fill="white"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Generator Etichete</h3>
+                            <p>Creează etichete personalizate pentru lumânări</p>
+                            <div style="margin-top: 8px;">
+                                <span class="badge" style="background: rgba(233, 30, 99, 0.15); color: #e91e63;">Design rapid și imprimare</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item active" onclick="showScreen('home')">
+                    <div class="icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-<!-- AI HELPER -->
-<div class="card">
-<h2>🤖 AI Helper</h2>
-<div id="aiChat"></div>
-<input class="aiInput" id="aiInput" placeholder="Ask AI..." />
-<button onclick="askAI()">Ask AI</button>
-</div>
+        <!-- Calculator Screen -->
+        <div class="screen" id="calculator">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <button class="back-button" onclick="showScreen('home')">←</button>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <rect x="4" y="2" width="16" height="20" rx="2" stroke="white" stroke-width="2"/>
+                        <path d="M8 6H16M8 10H16M8 14H12M14 14H16M8 18H10M12 18H16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Stock Calculator
+                </h1>
+                <p>Calculate materials for your batch</p>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <h3>Detalii Producție</h3>
+                    <div class="input-group">
+                        <label>Număr Lumânări</label>
+                        <input type="number" value="10" id="numCandles">
+                    </div>
+                    <div class="input-group">
+                        <label>Mărime Container</label>
+                        <select id="containerSize">
+                            <option value="227">8 oz (227g)</option>
+                            <option value="340">12 oz (340g)</option>
+                            <option value="454">16 oz (454g)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Tip Ceară</label>
+                        <select id="waxType">
+                            <option value="45">Ceară de Soia (45 lei/kg)</option>
+                            <option value="75">Ceară de Albine (75 lei/kg)</option>
+                            <option value="35">Parafină (35 lei/kg)</option>
+                            <option value="55">Ceară de Cocos (55 lei/kg)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Concentrație Aromă (%)</label>
+                        <input type="number" value="8" min="0" max="12" id="fragranceLoad">
+                    </div>
+                    <div class="input-group">
+                        <label>Preț Ulei Aromat (lei/100ml)</label>
+                        <input type="number" value="25" id="fragrancePrice">
+                    </div>
+                    <div class="input-group">
+                        <label>Cost Fitil + Container + Etichetă (lei/buc)</label>
+                        <input type="number" value="8" id="suppliesCost">
+                    </div>
+                    <div class="input-group">
+                        <label>Marjă Profit Dorită (%)</label>
+                        <input type="number" value="150" min="0" id="profitMargin">
+                    </div>
+                    <button class="button" onclick="calculateCosts()">Calculează Costuri și Preț</button>
+                    <div class="calculation-result" id="calcResult" style="display: none;">
+                        <h4>Materiale Necesare:</h4>
+                        <p><strong>Ceară:</strong> <span id="waxAmount"></span> kg</p>
+                        <p><strong>Ulei Aromat:</strong> <span id="fragranceAmount"></span> ml</p>
+                        <p><strong>Fitile:</strong> <span id="wicksAmount"></span> buc (CD-10)</p>
+                        
+                        <div style="height: 2px; background: linear-gradient(90deg, transparent, #4caf50, transparent); margin: 16px 0;"></div>
+                        
+                        <h4 style="margin-top: 12px;">Analiză Costuri:</h4>
+                        <p><strong>Cost Ceară:</strong> <span id="waxCost"></span> lei</p>
+                        <p><strong>Cost Ulei Aromat:</strong> <span id="fragranceCost"></span> lei</p>
+                        <p><strong>Cost Consumabile:</strong> <span id="suppliesCostTotal"></span> lei</p>
+                        <p style="font-size: 16px; margin-top: 8px;"><strong>Cost Total Producție:</strong> <span id="totalCost"></span> lei</p>
+                        <p><strong>Cost per Lumânare:</strong> <span id="costPerCandle"></span> lei</p>
+                        
+                        <div style="height: 2px; background: linear-gradient(90deg, transparent, #667eea, transparent); margin: 16px 0;"></div>
+                        
+                        <h4 style="margin-top: 12px; color: #667eea;">Estimare Preț Vânzare:</h4>
+                        <p style="font-size: 18px; font-weight: 700; color: #667eea;"><strong>Preț Recomandat/Buc:</strong> <span id="sellPrice"></span> lei</p>
+                        <p style="font-size: 16px; color: #4caf50;"><strong>Profit Estimat Total:</strong> <span id="totalProfit"></span> lei</p>
+                        <p style="font-size: 14px; color: #6e6e73;"><strong>Profit per Lumânare:</strong> <span id="profitPerCandle"></span> lei</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-<footer>© 2026 NOOR CandleCraft</footer>
+        <!-- Recipes Screen -->
+        <div class="screen" id="recipes">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 7H16M8 11H16M8 15H12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    My Recipes
+                </h1>
+                <p>Your candle formulas</p>
+            </div>
+            <div class="content">
+                <button class="button" style="margin-bottom: 20px;">+ New Recipe</button>
+                
+                <div class="recipe-item" onclick="showScreen('recipe-detail')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C9.5 4 8 6.5 8 9C8 11 9 12.5 10.5 13.5C11 14 11 14.5 11 15V16C11 16.5 11.5 17 12 17C12.5 17 13 16.5 13 16V15C13 14.5 13 14 13.5 13.5C15 12.5 16 11 16 9C16 6.5 14.5 4 12 2Z" fill="white" stroke="white" stroke-width="0.5"/>
+                                <circle cx="12" cy="18.5" r="1" fill="white"/>
+                                <circle cx="12" cy="21" r="0.8" fill="white"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4>Lavender Dreams</h4>
+                            <p>Soy wax • 8% fragrance load • Last used 3 days ago</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recipe-item">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #b3e5fc 0%, #81d4fa 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 12C3 12 5.5 6 12 6C18.5 6 21 12 21 12C21 12 18.5 18 12 18C5.5 18 3 12 3 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
+                                <path d="M3 8C3 8 6 10 8 11M21 8C21 8 18 10 16 11M3 16C3 16 6 14 8 13M21 16C21 16 18 14 16 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4>Ocean Breeze</h4>
+                            <p>Coconut wax • 10% fragrance load • Last used 1 week ago</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recipe-item">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L9 8L3 9L7.5 13.5L6 20L12 16.5L18 20L16.5 13.5L21 9L15 8L12 2Z" fill="white" stroke="white" stroke-width="1"/>
+                                <path d="M12 6L10.5 9.5L7 10L9.5 12.5L8.5 16L12 13.8L15.5 16L14.5 12.5L17 10L13.5 9.5L12 6Z" fill="rgba(255,140,0,0.6)"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4>Autumn Spice</h4>
+                            <p>Soy-beeswax blend • 9% fragrance load • Last used 2 weeks ago</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recipe-item">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #fff59d 0%, #ffeb3b 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="5" stroke="white" stroke-width="2"/>
+                                <path d="M12 2V5M12 19V22M22 12H19M5 12H2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M18.36 5.64L16.24 7.76M7.76 16.24L5.64 18.36M18.36 18.36L16.24 16.24M7.76 7.76L5.64 5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4>Citrus Burst</h4>
+                            <p>Paraffin wax • 7% fragrance load • Last used 1 month ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item active" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-</div>
+        <!-- Recipe Detail Screen -->
+        <div class="screen" id="recipe-detail">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <button class="back-button" onclick="showScreen('recipes')">←</button>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M12 2L12 8M12 8C10.5 8 9 9 9 11V22H15V11C15 9 13.5 8 12 8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <ellipse cx="12" cy="3" rx="2" ry="1" fill="white"/>
+                        <path d="M9 16H15M9 19H15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    Lavender Dreams
+                </h1>
+                <p>Recipe details</p>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <h3>Ingredients</h3>
+                    <div class="stock-item">
+                        <span class="stock-name">Soy Wax</span>
+                        <span class="stock-amount">120g per candle</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Lavender Essential Oil</span>
+                        <span class="stock-amount">9.6ml per candle</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Wick</span>
+                        <span class="stock-amount">CD-10</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Instructions</h3>
+                    <p>1. Heat soy wax to 185°F (85°C)</p>
+                    <p>2. Add fragrance oil at 170°F (77°C)</p>
+                    <p>3. Pour at 135°F (57°C)</p>
+                    <p>4. Cure time: 7-10 days</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Notes</h3>
+                    <p>This is my best-selling recipe! The lavender blends beautifully with vanilla undertones. Remember to let it cure for the full 10 days for best scent throw.</p>
+                </div>
+                
+                <button class="button">Make This Recipe</button>
+                <button class="button button-secondary">Edit Recipe</button>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item active" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-<script>
-// COSTS
-const COSTS={wax:0.05,frag:0.10,wick:0.50,jar:0.80};
-let initStock={wax:0,frag:0,wick:0,jar:0};
+        <!-- Stock Screen -->
+        <div class="screen" id="stock">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Inventory
+                </h1>
+                <p>Track your materials</p>
+            </div>
+            <div class="content">
+                <button class="button" style="margin-bottom: 20px;">+ Add Item</button>
+                
+                <div class="card">
+                    <h3>Waxes</h3>
+                    <div class="stock-item">
+                        <span class="stock-name">Soy Wax</span>
+                        <span class="stock-amount">2.5 kg</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Beeswax</span>
+                        <span class="stock-amount low-stock">0.3 kg</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Coconut Wax</span>
+                        <span class="stock-amount">1.8 kg</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Fragrances</h3>
+                    <div class="stock-item">
+                        <span class="stock-name">Lavender Essential Oil</span>
+                        <span class="stock-amount">250 ml</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Vanilla Fragrance</span>
+                        <span class="stock-amount">100 ml</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Ocean Breeze</span>
+                        <span class="stock-amount low-stock">50 ml</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Supplies</h3>
+                    <div class="stock-item">
+                        <span class="stock-name">Cotton Wicks (CD-10)</span>
+                        <span class="stock-amount">150 units</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">8 oz Glass Jars</span>
+                        <span class="stock-amount">45 units</span>
+                    </div>
+                    <div class="stock-item">
+                        <span class="stock-name">Wick Stickers</span>
+                        <span class="stock-amount low-stock">20 units</span>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item active" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-// SAVE / LOAD
-function saveData(){
-  const data={
-    inventory:{
-      wax:+document.getElementById('invWax').value||0,
-      frag:+document.getElementById('invFrag').value||0,
-      wick:+document.getElementById('invWick').value||0,
-      jar:+document.getElementById('invJar').value||0
-    },
-    recipes:[],
-    calendar:[]
-  };
-  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
-    if(i===0) return;
-    data.recipes.push({
-      name:r.querySelector("td:nth-child(1) input").value,
-      wax:+r.querySelector(".wax").value||0,
-      frag:+r.querySelector(".frag").value||0,
-      wick:+r.querySelector(".wick").value||0
-    });
-  });
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    data.calendar.push({
-      name:r.querySelector(".recipeName").value,
-      qty:+r.querySelector(".qty").value||0,
-      pour:r.querySelector(".pour").value
-    });
-  });
-  localStorage.setItem("noorData",JSON.stringify(data));
-}
+        <!-- Calendar Screen -->
+        <div class="screen" id="calendar">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <button class="back-button" onclick="showScreen('home')">←</button>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
+                        <path d="M16 2V6M8 2V6M3 10H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="8" cy="14" r="1" fill="white"/>
+                        <circle cx="12" cy="14" r="1" fill="white"/>
+                        <circle cx="16" cy="14" r="1" fill="white"/>
+                        <circle cx="8" cy="18" r="1" fill="white"/>
+                        <circle cx="12" cy="18" r="1" fill="white"/>
+                    </svg>
+                    Calendar Producție
+                </h1>
+                <p>Planifică și organizează taskurile</p>
+            </div>
+            <div class="content">
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);">
+                    <h3 style="color: white; font-size: 16px; margin-bottom: 4px;">Săptămâna curentă</h3>
+                    <p style="color: rgba(255,255,255,0.95); font-size: 20px; font-weight: 700; margin-top: 4px;">9 - 15 Februarie 2026</p>
+                </div>
 
-function loadData(){
-  const d=localStorage.getItem("noorData");
-  if(!d) return;
-  const data=JSON.parse(d);
-  // inventory
-  document.getElementById('invWax').value=data.inventory.wax;
-  document.getElementById('invFrag').value=data.inventory.frag;
-  document.getElementById('invWick').value=data.inventory.wick;
-  document.getElementById('invJar').value=data.inventory.jar;
-  initStock={...data.inventory};
-  // recipes
-  const recipeTable=document.getElementById("recipes");
-  while(recipeTable.rows.length>1) recipeTable.deleteRow(1);
-  data.recipes.forEach(r=>{
-    const row=recipeTable.insertRow();
-    row.innerHTML=`<td><input value="${r.name}"></td>
-<td><input class="wax" value="${r.wax}" oninput="calc()"></td>
-<td><input class="frag" value="${r.frag}" oninput="calc()"></td>
-<td><input class="wick" value="${r.wick}" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>`;
-  });
-  // calendar
-  const calTable=document.getElementById("calendar");
-  while(calTable.rows.length>1) calTable.deleteRow(1);
-  data.calendar.forEach(c=>{
-    const row=calTable.insertRow();
-    row.innerHTML=`<td><input class="recipeName" value="${c.name}"></td>
-<td><input class="qty" value="${c.qty}" oninput="recalcInventory()"></td>
-<td><input type="date" class="pour" value="${c.pour}" onchange="updateCalendar()"></td>
-<td class="readyDate">–</td>
-<td class="status">–</td>`;
-  });
-}
-loadData();
+                <div class="card">
+                    <h3 style="margin-bottom: 14px;">Luni, 9 Feb</h3>
+                    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%); padding: 16px; border-radius: 14px; margin-bottom: 0; border-left: 4px solid #ffc107; box-shadow: 0 2px 12px rgba(255, 193, 7, 0.2);">
+                        <strong style="color: #1a1a1a; font-size: 16px;">Producție Lavender Dreams</strong>
+                        <div style="font-size: 14px; color: #6e6e73; margin-top: 8px; font-weight: 600;">50 bucăți • 10:00 - 14:00</div>
+                    </div>
+                </div>
 
-// CALC COST
-function calc(){
-  document.querySelectorAll("#recipes tr").forEach((r,i)=>{
-    if(i===0) return;
-    const wax=+r.querySelector(".wax").value||0;
-    const frag=+r.querySelector(".frag").value||0;
-    const wick=+r.querySelector(".wick").value||0;
-    const cost=wax*COSTS.wax + frag*COSTS.frag + wick*COSTS.wick + COSTS.jar;
-    r.querySelector(".cost").innerText=cost.toFixed(2);
-    r.querySelector(".price").innerText=(cost*2.5).toFixed(2);
-  });
-  saveData();
-}
+                <div class="card">
+                    <h3 style="margin-bottom: 14px;">Miercuri, 11 Feb</h3>
+                    <div style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); padding: 16px; border-radius: 14px; margin-bottom: 12px; border-left: 4px solid #17a2b8; box-shadow: 0 2px 12px rgba(23, 162, 184, 0.2);">
+                        <strong style="color: #1a1a1a; font-size: 16px;">Demulare și etichetare</strong>
+                        <div style="font-size: 14px; color: #6e6e73; margin-top: 8px; font-weight: 600;">Batch #124 • 09:00 - 11:00</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 16px; border-radius: 14px; border-left: 4px solid #dc3545; box-shadow: 0 2px 12px rgba(220, 53, 69, 0.2);">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong style="color: #1a1a1a; font-size: 16px;">Comandă materiale</strong>
+                                <div style="font-size: 14px; color: #6e6e73; margin-top: 8px; font-weight: 600;">Ceară de soia, fitile</div>
+                            </div>
+                            <span class="badge badge-warning">Urgent</span>
+                        </div>
+                    </div>
+                </div>
 
-// ADD RECIPE
-function addRecipe(){
-  const t=document.getElementById("recipes");
-  const row=t.insertRow();
-  row.innerHTML=`<td><input></td>
-<td><input class="wax" oninput="calc()"></td>
-<td><input class="frag" oninput="calc()"></td>
-<td><input class="wick" oninput="calc()"></td>
-<td class="cost">–</td>
-<td class="price">–</td>`;
-  saveData();
-}
+                <div class="card">
+                    <h3 style="margin-bottom: 14px;">Vineri, 13 Feb</h3>
+                    <div style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); padding: 16px; border-radius: 14px; border-left: 4px solid #28a745; box-shadow: 0 2px 12px rgba(40, 167, 69, 0.2);">
+                        <strong style="color: #1a1a1a; font-size: 16px;">Livrare către client</strong>
+                        <div style="font-size: 14px; color: #6e6e73; margin-top: 8px; font-weight: 600;">30 lumânări Ocean Breeze • 15:00</div>
+                    </div>
+                </div>
 
-// CALENDAR
-function updateCalendar(){
-  const today=new Date();
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    const pour=r.querySelector(".pour").value;
-    if(!pour) return;
-    const d=new Date(pour);
-    const ready=new Date(d);
-    ready.setDate(d.getDate()+7);
-    r.querySelector(".readyDate").innerText=d.toISOString().split('T')[0];
-    r.querySelector(".status").innerHTML=today>=ready?'<span class="badge ready">Ready</span>':'<span class="badge cure">In Cure</span>';
-  });
-  recalcInventory();
-  saveData();
-}
+                <button class="button">+ Adaugă Task Nou</button>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-// INVENTORY
-function recalcInventory(){
-  let waxStock=initStock.wax;
-  let fragStock=initStock.frag;
-  let wickStock=initStock.wick;
-  let jarStock=initStock.jar;
+        <!-- Labels Generator Screen -->
+        <div class="screen" id="labels">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <button class="back-button" onclick="showScreen('home')">←</button>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M20.59 13.41L13.42 20.58C13.2343 20.766 13.0137 20.9135 12.7709 21.0141C12.5281 21.1148 12.2678 21.1666 12.005 21.1666C11.7422 21.1666 11.4819 21.1148 11.2391 21.0141C10.9963 20.9135 10.7757 20.766 10.59 20.58L2 12V2H12L20.59 10.59C20.9625 10.9647 21.1716 11.4716 21.1716 12C21.1716 12.5284 20.9625 13.0353 20.59 13.41Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="7" cy="7" r="1.5" fill="white"/>
+                    </svg>
+                    Generator Etichete
+                </h1>
+                <p>Design etichete personalizate</p>
+            </div>
+            <div class="content">
+                <div class="card">
+                    <h3>Detalii Etichetă</h3>
+                    <div class="input-group">
+                        <label>Nume Lumânare</label>
+                        <input type="text" value="Lavender Dreams">
+                    </div>
+                    <div class="input-group">
+                        <label>Aromă</label>
+                        <input type="text" value="Lavandă & Vanilie">
+                    </div>
+                    <div class="input-group">
+                        <label>Greutate</label>
+                        <select>
+                            <option>8 oz (227g)</option>
+                            <option>12 oz (340g)</option>
+                            <option>16 oz (454g)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Durată ardere</label>
+                        <input type="text" value="45-50 ore">
+                    </div>
+                </div>
 
-  document.querySelectorAll("#calendar tr").forEach((r,i)=>{
-    if(i===0) return;
-    const qty=+r.querySelector(".qty").value||0;
-    const recipeName=r.querySelector(".recipeName").value;
-    const recipeRow=Array.from(document.querySelectorAll("#recipes tr")).find((tr,j)=>j>0 && tr.querySelector("td input").value===recipeName);
-    if(!recipeRow) return;
-    const wax=+recipeRow.querySelector(".wax").value||0;
-    const frag=+recipeRow.querySelector(".frag").value||0;
-    const wick=+recipeRow.querySelector(".wick").value||0;
+                <div class="card" style="background: linear-gradient(135deg, #fafbfc 0%, #f0f2f5 100%);">
+                    <h3 style="text-align: center; margin-bottom: 20px;">Preview Etichetă</h3>
+                    <div style="border: 3px dashed #d0d0d0; padding: 28px; background: white; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                        <div style="margin-bottom: 12px;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+                                <defs>
+                                    <linearGradient id="candleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2L12 8M12 8C10.5 8 9 9 9 11V22H15V11C15 9 13.5 8 12 8Z" stroke="url(#candleGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(102, 126, 234, 0.1)"/>
+                                <ellipse cx="12" cy="3" rx="2" ry="1.2" fill="#FFA726"/>
+                                <path d="M9 16H15M9 19H15" stroke="url(#candleGrad)" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div style="font-size: 26px; font-weight: 800; color: #1a1a1a; margin-bottom: 12px; letter-spacing: -0.5px;">Lavender Dreams</div>
+                        <div style="font-size: 15px; color: #667eea; margin-bottom: 10px; font-weight: 600;">Aromă: Lavandă & Vanilie</div>
+                        <div style="height: 2px; background: linear-gradient(90deg, transparent, #667eea, transparent); margin: 16px 0;"></div>
+                        <div style="font-size: 13px; color: #6e6e73; margin-bottom: 6px; font-weight: 600;">Greutate net: 8 oz (227g)</div>
+                        <div style="font-size: 13px; color: #6e6e73; margin-bottom: 20px; font-weight: 600;">Durată ardere: 45-50 ore</div>
+                        <div style="font-size: 11px; color: #8e8e93; border-top: 1px solid #e8eaed; padding-top: 14px; line-height: 1.6; font-weight: 500;">
+                            ✨ Handmade with love • 100% Soy Wax<br>
+                            ⚠️ Keep away from children and pets
+                        </div>
+                    </div>
+                </div>
 
-    waxStock=Math.max(0,waxStock - wax*qty);
-    fragStock=Math.max(0,fragStock - frag*qty);
-    wickStock=Math.max(0,wickStock - wick*qty);
-    jarStock=Math.max(0,jarStock - qty);
-  });
+                <div class="card">
+                    <h3 style="margin-bottom: 14px;">Stil Etichetă</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button class="button button-secondary" style="background: white; border: 2px solid #667eea; color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);">✨ Minimal</button>
+                        <button class="button button-secondary" style="background: white; border: 2px solid #8b7355; color: #8b7355; box-shadow: 0 2px 8px rgba(139, 115, 85, 0.2);">🏛️ Vintage</button>
+                        <button class="button button-secondary" style="background: white; border: 2px solid #2196f3; color: #2196f3; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);">🎨 Modern</button>
+                        <button class="button button-secondary" style="background: white; border: 2px solid #795548; color: #795548; box-shadow: 0 2px 8px rgba(121, 85, 72, 0.2);">🌿 Rustic</button>
+                    </div>
+                </div>
 
-  document.getElementById('invWax').value=waxStock;
-  document.getElementById('invFrag').value=fragStock;
-  document.getElementById('invWick').value=wickStock;
-  document.getElementById('invJar').value=jarStock;
+                <button class="button">📥 Descarcă Etichetă (PDF)</button>
+                <button class="button button-secondary">💾 Salvează Template</button>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
 
-  saveData();
-}
+        <!-- AI Helper Screen -->
+        <div class="screen" id="ai">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>⚡ 📶</span>
+            </div>
+            <div class="header">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
+                        <path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    AI Assistant
+                </h1>
+                <p>Ask me anything about candle making</p>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        <div class="message-bubble">
+                            Hi! I'm your candle-making assistant. I can help you with recipes, troubleshooting, calculations, and tips. What would you like to know?
+                        </div>
+                    </div>
+                    <div class="message user">
+                        <div class="message-bubble">
+                            Why is my candle tunneling?
+                        </div>
+                    </div>
+                    <div class="message ai">
+                        <div class="message-bubble">
+                            Tunneling usually happens when the wick is too small for your container. Try these fixes:<br><br>
+                            • Use a larger wick size (try CD-12 instead of CD-10)<br>
+                            • Ensure first burn lasts 2-3 hours to create full melt pool<br>
+                            • Check your fragrance load - too much can affect burn<br><br>
+                            Would you like me to suggest the right wick for your container size?
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="Ask me anything...">
+                    <button class="send-button">➤</button>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="nav-item" onclick="showScreen('home')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Home</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('recipes')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Recipes</div>
+                </button>
+                <button class="nav-item" onclick="showScreen('stock')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div>Stock</div>
+                </button>
+                <button class="nav-item active" onclick="showScreen('ai')">
+                    <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2V5M12 19V22M22 12H19M5 12H2M19.07 4.93L16.95 7.05M7.05 16.95L4.93 19.07M19.07 19.07L16.95 16.95M7.05 7.05L4.93 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                    <div>AI Helper</div>
+                </button>
+            </div>
+        </div>
+    </div>
 
-// AI HELPER (MOCK)
-function askAI(){
-  const input=document.getElementById('aiInput').value.trim();
-  if(!input) return;
-  const chat=document.getElementById('aiChat');
-  const userMsg=`<div><b>You:</b> ${input}</div>`;
-  chat.innerHTML+=userMsg;
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            // Show selected screen
+            const selectedScreen = document.getElementById(screenId);
+            if (selectedScreen) {
+                selectedScreen.classList.add('active');
+            }
+            
+            // Update nav bar active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+        }
 
-  // MOCK RESPONSE
-  let response="🤖 Sorry, I need more data!";
-  if(/price/i.test(input)){
-    response="💰 Suggested price = Cost * 2.5 (default)";
-  } else if(/wax/i.test(input)){
-    response="🧴 You can increase wax by 10% for stronger scent.";
-  } else if(/inventory|stock/i.test(input)){
-    response="📦 Check inventory above; recalc if needed.";
-  } else if(/recipe/i.test(input)){
-    response="📝 Try adjusting fragrance for better aroma balance.";
-  }
-  chat.innerHTML+=`<div><b>AI:</b> ${response}</div>`;
-  chat.scrollTop=chat.scrollHeight;
-  document.getElementById('aiInput').value="";
-}
+        function showCalculation() {
+            document.getElementById('calcResult').style.display = 'block';
+        }
 
-// INITIAL
-calc();
-updateCalendar();
-recalcInventory();
-</script>
-
+        function calculateCosts() {
+            // Get input values
+            const numCandles = parseFloat(document.getElementById('numCandles').value) || 10;
+            const containerSize = parseFloat(document.getElementById('containerSize').value) || 227;
+            const waxPricePerKg = parseFloat(document.getElementById('waxType').value) || 45;
+            const fragranceLoad = parseFloat(document.getElementById('fragranceLoad').value) || 8;
+            const fragrancePricePer100ml = parseFloat(document.getElementById('fragrancePrice').value) || 25;
+            const suppliesCostPerCandle = parseFloat(document.getElementById('suppliesCost').value) || 8;
+            const profitMargin = parseFloat(document.getElementById('profitMargin').value) || 150;
+            
+            // Calculate wax needed (container size * 0.85 fill ratio)
+            const waxPerCandle = (containerSize * 0.85) / 1000; // in kg
+            const totalWax = waxPerCandle * numCandles;
+            
+            // Calculate fragrance oil needed
+            const fragrancePerCandle = (waxPerCandle * 1000 * fragranceLoad / 100); // in ml
+            const totalFragrance = fragrancePerCandle * numCandles;
+            
+            // Calculate costs
+            const waxCost = totalWax * waxPricePerKg;
+            const fragranceCost = (totalFragrance / 100) * fragrancePricePer100ml;
+            const suppliesCostTotal = suppliesCostPerCandle * numCandles;
+            const totalProductionCost = waxCost + fragranceCost + suppliesCostTotal;
+            const costPerCandle = totalProductionCost / numCandles;
+            
+            // Calculate selling price and profit
+            const sellPricePerCandle = costPerCandle * (1 + profitMargin / 100);
+            const profitPerCandle = sellPricePerCandle - costPerCandle;
+            const totalProfit = profitPerCandle * numCandles;
+            
+            // Display results
+            document.getElementById('waxAmount').textContent = totalWax.toFixed(2);
+            document.getElementById('fragranceAmount').textContent = totalFragrance.toFixed(0);
+            document.getElementById('wicksAmount').textContent = numCandles;
+            document.getElementById('waxCost').textContent = waxCost.toFixed(2);
+            document.getElementById('fragranceCost').textContent = fragranceCost.toFixed(2);
+            document.getElementById('suppliesCostTotal').textContent = suppliesCostTotal.toFixed(2);
+            document.getElementById('totalCost').textContent = totalProductionCost.toFixed(2);
+            document.getElementById('costPerCandle').textContent = costPerCandle.toFixed(2);
+            document.getElementById('sellPrice').textContent = sellPricePerCandle.toFixed(2);
+            document.getElementById('totalProfit').textContent = totalProfit.toFixed(2);
+            document.getElementById('profitPerCandle').textContent = profitPerCandle.toFixed(2);
+            
+            document.getElementById('calcResult').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
-
