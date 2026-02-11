@@ -1389,5 +1389,112 @@
             document.getElementById('calcResult').style.display = 'block';
         }
     </script>
+// ============================
+// BASIC APP ENGINE
+// ============================
+
+// screen switch
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// ============================
+// LOCAL STORAGE
+// ============================
+
+const DB = {
+  get(key, fallback) {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  },
+  set(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
+// init
+if (!localStorage.getItem("recipes")) DB.set("recipes", []);
+if (!localStorage.getItem("stock")) DB.set("stock", []);
+
+
+// ============================
+// RECIPES
+// ============================
+
+function addRecipe(recipe) {
+  const recipes = DB.get("recipes", []);
+  recipes.push({ id: Date.now(), ...recipe });
+  DB.set("recipes", recipes);
+}
+
+function deleteRecipe(id) {
+  let recipes = DB.get("recipes", []);
+  recipes = recipes.filter(r => r.id !== id);
+  DB.set("recipes", recipes);
+}
+
+// ============================
+// STOCK
+// ============================
+
+function addStock(item) {
+  const stock = DB.get("stock", []);
+  stock.push({ id: Date.now(), ...item });
+  DB.set("stock", stock);
+}
+
+function updateStock(id, qty) {
+  const stock = DB.get("stock", []);
+  const item = stock.find(s => s.id === id);
+  if (item) item.quantity = qty;
+  DB.set("stock", stock);
+}
+
+
+// ============================
+// CALCULATOR
+// ============================
+
+function calculateCosts() {
+  const candles = Number(document.getElementById("numCandles").value);
+  const size = Number(document.getElementById("containerSize").value);
+  const waxPrice = Number(document.getElementById("waxType").value);
+  const fragranceLoad = Number(document.getElementById("fragranceLoad").value);
+  const fragrancePrice = Number(document.getElementById("fragrancePrice").value);
+  const supplies = Number(document.getElementById("suppliesCost").value);
+  const margin = Number(document.getElementById("profitMargin").value);
+
+  const totalWaxGrams = candles * size;
+  const waxKg = totalWaxGrams / 1000;
+  const fragranceMl = totalWaxGrams * (fragranceLoad / 100);
+
+  const waxCost = waxKg * waxPrice;
+  const fragranceCost = (fragranceMl / 100) * fragrancePrice;
+  const suppliesTotal = candles * supplies;
+
+  const total = waxCost + fragranceCost + suppliesTotal;
+  const perCandle = total / candles;
+
+  const sell = perCandle * (1 + margin / 100);
+  const profitTotal = (sell - perCandle) * candles;
+
+  document.getElementById("calcResult").style.display = "block";
+  document.getElementById("waxAmount").innerText = waxKg.toFixed(2);
+  document.getElementById("fragranceAmount").innerText = fragranceMl.toFixed(0);
+  document.getElementById("wicksAmount").innerText = candles;
+
+  document.getElementById("waxCost").innerText = waxCost.toFixed(2);
+  document.getElementById("fragranceCost").innerText = fragranceCost.toFixed(2);
+  document.getElementById("suppliesCostTotal").innerText = suppliesTotal.toFixed(2);
+  document.getElementById("totalCost").innerText = total.toFixed(2);
+  document.getElementById("costPerCandle").innerText = perCandle.toFixed(2);
+
+  document.getElementById("sellPrice").innerText = sell.toFixed(2);
+  document.getElementById("totalProfit").innerText = profitTotal.toFixed(2);
+  document.getElementById("profitPerCandle").innerText = (sell - perCandle).toFixed(2);
+}
+
+</script>
+
 </body>
 </html>
