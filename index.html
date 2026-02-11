@@ -1494,6 +1494,40 @@ function calculateCosts() {
 }
 
 </script>
+function makeRecipe() {
+  const recipes = DB.get("recipes", []);
+
+  const select = document.getElementById("recipeSelect");
+  if (!select) {
+    alert("recipeSelect element not found");
+    return;
+  }
+
+  const id = Number(select.value);
+  const recipe = recipes.find(r => r.id === id);
+
+  if (!recipe) {
+    alert("Please select a recipe");
+    return;
+  }
+
+  // pune datele în calculator
+  if (document.getElementById("waxType"))
+    document.getElementById("waxType").value = recipe.waxType;
+
+  if (document.getElementById("fragranceLoad"))
+    document.getElementById("fragranceLoad").value = recipe.fragranceLoad;
+
+  // poți adăuga și alte câmpuri dacă există
+
+  // rulează calculul
+  calculateCosts();
+
+  // te duce la ecranul calculatorului (dacă folosești screens)
+  if (typeof showScreen === "function") {
+    showScreen("calculator");
+  }
+}
 
 </body>
 </html>
